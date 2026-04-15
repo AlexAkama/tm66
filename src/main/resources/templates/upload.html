@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Загрузка файла</title>
+</head>
+<body>
+<div>
+    <h2>Загрузить задачи</h2>
+    <form id="uploadXlsxForm" method="post" action="/api/upload/tasks" enctype="multipart/form-data">
+        <input type="file" name="file" accept=".xlsx" required/>
+        <button type="submit">Загрузить</button>
+    </form>
+
+    <div id="message"></div>
+</div>
+<div>
+    <h2>Загрузить расшифровку утилизации</h2>
+    <form id="uploadTrashForm" method="post" action="/api/upload/trash" enctype="multipart/form-data">
+        <input type="file" name="file" accept=".txt" required/>
+        <button type="submit">Загрузить</button>
+    </form>
+</div>
+<div>
+    <h2>Добавить коммент</h2>
+    <form id="addComment" method="post" action="/api/upload/comment" enctype="application/x-www-form-urlencoded">
+        <label for="comment-orderId">ID заказа:</label>
+        <input type="text" id="comment-orderId" name="orderId" required><br><br>
+
+        <label for="comment-date">Дата:</label>
+        <input type="date" id="comment-date" name="date" required><br><br>
+
+        <label for="comment-content">Комментарий:</label><br>
+        <textarea id="comment-content" name="comment" rows="4" cols="50" required></textarea><br><br>
+
+        <button type="submit">Отправить</button>
+    </form>
+</div>
+
+
+<script>
+    const dateInput = document.getElementById('comment-date');
+    const today = new Date().toISOString().split('T')[0];
+    dateInput.value = today;
+
+
+    function handleFormSubmit(formId, redirectUrl) {
+
+        const form = document.getElementById(formId);
+        if (!form) return;
+
+        form.onsubmit = function (event) {
+            event.preventDefault();
+
+            const formData = new FormData(this);
+
+            fetch(this.action, {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.text())
+                .then(message => {
+                    document.getElementById('message').innerText = message;
+                    if (message.includes("успешно")) {
+                        window.location.href = redirectUrl;
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('message').innerText = "Ошибка сети: " + error;
+                });
+        };
+    }
+    handleFormSubmit('uploadXlsxForm', '/groups');
+    handleFormSubmit('uploadTrashForm', '/');
+    handleFormSubmit('addComment', '/');
+</script>
+
+</body>
+</html>

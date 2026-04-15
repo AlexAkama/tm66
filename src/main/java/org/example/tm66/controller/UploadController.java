@@ -1,0 +1,78 @@
+package org.example.tm66.controller;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.example.tm66.model.FinalizeComment;
+import org.example.tm66.model.TrashOrder;
+import org.example.tm66.service.FinalizeCommentService;
+import org.example.tm66.service.OrderService;
+import org.example.tm66.service.TrashOrderService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+
+@Slf4j
+@RestController
+@RequestMapping("/api/upload")
+@RequiredArgsConstructor
+public class UploadController {
+
+    private final OrderService orderService;
+    private final TrashOrderService trashOrderService;
+    private final FinalizeCommentService finalizeCommentService;
+
+    @PostMapping("tasks")
+    public ResponseEntity<?> uploadXlsx(@RequestParam("file") MultipartFile file) {
+        if (file.isEmpty()) {
+            return ResponseEntity.badRequest().body("Файл не выбран");
+        }
+        try (InputStream is = file.getInputStream();
+             Workbook workbook = new XSSFWorkbook(is)) {
+            orderService.process(workbook);
+            return ResponseEntity.ok("Файл успешно обработан");
+        } catch (Exception e) {
+            log.error("Ошибка при обработке файла:", e);
+            return ResponseEntity.internalServerError().body("Ошибка при обработке файла: " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/trash")
+    public ResponseEntity<?> uploadTrashContent(@RequestParam("file") MultipartFile file) {
+        if (file.isEmpty()) {
+            return
+                    ResponseEntity.badRequest().body("Файл не выбран");
+        }
+        try (BufferedReader reader = new BufferedReader(
+                new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8))) {
+
+            List<String> lines = reader.lines().toList();
+            TrashOrder order = trashOrderService.map(lines);
+            trashOrderService.updateOrAddOrder(order);
+
+            return ResponseEntity.ok("Файл успешно обработан");
+        } catch (Exception e) {
+            log.error("Ошибка при обработке файла:", e);
+            return ResponseEntity.internalServerError().body("Ошибка при обработке файла: " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/comment")
+    public ResponseEntity<?> addComment(@ModelAttribute FinalizeComment comment) {
+        try {
+            finalizeCommentService.add(comment);
+            return ResponseEntity.ok("Комментарий успешно добавлен");
+        } catch (Exception e) {
+            log.error("Ошибка при добавлении комментария:", e);
+            return ResponseEntity.internalServerError().body("Ошибка при добавлении комментария: " + e.getMessage());
+        }
+    }
+
+}
