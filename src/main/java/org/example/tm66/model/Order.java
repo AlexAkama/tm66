@@ -65,11 +65,14 @@ public class Order {
     }
 
     public String getTargetDateCss() {
-        LocalDate now = LocalDate.now();
-        int i = now.compareTo(getTargetDate());
-        if (i > 0) return "red-mark";
-        if (i == 0) return "red";
+        if (getStatus() != TaskStatus.READY) {
+            LocalDate now = LocalDate.now();
+            int i = now.compareTo(getTargetDate());
+            if (i > 0) return "red-mark";
+            if (i == 0) return "red";
+        }
         return "";
+
     }
 
     public TaskStatus getStatus() {
