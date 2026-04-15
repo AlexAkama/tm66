@@ -85,6 +85,7 @@ public class OrderService {
         LocalDate now = LocalDate.now();
         return groups.stream()
                 .flatMap(group -> group.getOrders().stream())
+                .filter(order -> order.getStatus() != TaskStatus.READY)
                 .filter(order -> order.getTargetDate().equals(now))
                 .map(Order::getOrderId)
                 .toList();

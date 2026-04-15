@@ -29,6 +29,7 @@
 
         .now-end-order {
             margin: 3px;
+            text-decoration: none;
         }
 
         .hidden {
@@ -87,7 +88,7 @@
         .order-id,
         .target-date,
         .address {
-            padding: 1px 3px;
+            padding: 3px;
             white-space: nowrap;
         }
 
@@ -298,8 +299,12 @@
 <div class="now-end" th:if="${nowEnd != null}">
     <h3 class="now-end-header red">Заканчиваются сегодня</h3>
     <div class="now-end-content">
-        <span th:each="orderId : ${nowEnd}" class="order-id blue-mark now-end-order">
-            <a th:text="${orderId}" th:href="'#order-'+${orderId}"></a>
+        <span th:each="orderId : ${nowEnd}">
+            <a class="order-id blue-mark now-end-order"
+               th:text="${orderId}"
+               th:href="'#order-'+${orderId}"
+               th:attr="data-id=${orderId}"
+            ></a>
         </span>
     </div>
 </div>
@@ -434,11 +439,37 @@
 
 
     const responseButtons = document.querySelectorAll('.response');
-    responseButtons.forEach(function (element) {
-        const id = element.dataset.id;
+    responseButtons.forEach(function (event) {
+        const id = event.dataset.id;
         const target = document.getElementById(id);
-        element.addEventListener('mouseenter', () => target?.classList.add('green-mark'));
-        element.addEventListener('mouseleave', () => target?.classList.remove('green-mark'));
+        event.addEventListener('mouseenter', () => target?.classList.add('green-mark'));
+        event.addEventListener('mouseleave', () => target?.classList.remove('green-mark'));
+    });
+
+    const nowEndOrders = document.querySelectorAll('.now-end-order');
+    nowEndOrders.forEach(order => {
+        order.addEventListener('click', function (event) {
+
+            const id = event.target.dataset.id;
+            const target = document.getElementById('order-'+id);
+
+            let flashCount = 0;
+            const maxFlashes = 3;
+
+            function flash() {
+                if (flashCount < maxFlashes) {
+                    target.style.opacity = '0.3';
+                    setTimeout(() => {
+                        target.style.opacity = '1';
+                        setTimeout(flash, 300);
+                    }, 300);
+                    flashCount++;
+                }
+            }
+
+            flash();
+
+        });
     });
 
 </script>
