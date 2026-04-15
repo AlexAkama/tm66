@@ -11,6 +11,7 @@ import org.example.tm66.model.*;
 import org.example.tm66.processor.ParseProcessor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -79,4 +80,13 @@ public class OrderService {
                 .toList();
     }
 
+    public List<String> getNowEndOrderId() {
+        if (groups == null) return null;
+        LocalDate now = LocalDate.now();
+        return groups.stream()
+                .flatMap(group -> group.getOrders().stream())
+                .filter(order -> order.getTargetDate().equals(now))
+                .map(Order::getOrderId)
+                .toList();
+    }
 }

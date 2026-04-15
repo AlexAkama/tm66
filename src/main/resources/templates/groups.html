@@ -23,6 +23,14 @@
             margin-block-end: 0.67em;
         }
 
+        .now-end-header {
+            margin: 10px 5px 5px;
+        }
+
+        .now-end-order {
+            margin: 3px;
+        }
+
         .hidden {
             display: none;
         }
@@ -287,13 +295,22 @@
 <div class="actual-time" th:text="'Актуально на ' + ${now}"></div>
 <button id="global-visible-switch">Скрыть заявки</button>
 
+<div class="now-end" th:if="${nowEnd != null}">
+    <h3 class="now-end-header red">Заканчиваются сегодня</h3>
+    <div class="now-end-content">
+        <span th:each="orderId : ${nowEnd}" class="order-id blue-mark now-end-order">
+            <a th:text="${orderId}" th:href="'#order-'+${orderId}"></a>
+        </span>
+    </div>
+</div>
+
 <div th:each="group : ${groups}">
 
     <div class="group-header" th:text="${group.getCity()} + ' | Заявок ' + ${group.orders.size()}"></div>
 
     <div th:each="order : ${group.orders}">
 
-        <div class="order">
+        <div class="order" th:id="'order-'+${order.getOrderId()}">
 
             <div class="order-header">
                 <span class="order-id blue-mark">

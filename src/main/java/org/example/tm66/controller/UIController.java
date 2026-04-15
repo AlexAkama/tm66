@@ -24,7 +24,9 @@ public class UIController {
     @GetMapping("/groups")
     public String showGroups(Model model) {
         List<Group> groups = orderService.getGroups();
+        List<String> nowEnd = orderService.getNowEndOrderId();
         model.addAttribute("groups", groups);
+        model.addAttribute("nowEnd", nowEnd);
         model.addAttribute("now", TimeUtils.now());
         model.addAttribute("admin", false);
         return "groups";
