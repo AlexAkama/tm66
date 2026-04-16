@@ -57,7 +57,7 @@
             font-family: "Tahoma", Geneva, sans-serif;
             position: absolute;
             right: 0;
-            top: 5px;
+            top: 8px;
             font-size: 0.7em;
             display: flex;
             align-items: center;
@@ -83,6 +83,10 @@
             padding: 5px;
             cursor: pointer;
             background-color: antiquewhite;
+        }
+
+        .ready {
+            color: lightgray;
         }
 
         .order-id,
@@ -317,14 +321,15 @@
 
         <div class="order" th:id="'order-'+${order.getOrderId()}">
 
-            <div class="order-header">
+            <div class="order-header" th:classappend="${order.getStatus().name() == 'READY' ? 'ready' : ''}">
                 <span class="order-id blue-mark">
                     <a target="_blank"
                        th:attr="id=${order.getOrderId()}"
                        th:text="${order.getOrderId()}"
                        th:href="${order.getUrl()}"></a>
                 </span>
-                <span class="address" th:text="${order.getAddress()} + ','"></span>
+                <span class="address"
+                      th:text="${order.getAddress()} + ${order.getAddress().equals('') || order.getPoint().equals('') ? '': ','}"></span>
                 <span class="address" th:text="${order.getPoint()}"></span>
                 <span class="target-date"
                       th:text="${order.getTargetDate()}"
@@ -373,13 +378,16 @@
             </div>
 
             <div class="order-info">
-                <span class="info-img" th:if="${order.isElectro()}">E</span>
-                <span class="info-img" th:if="${order.isRepair()}">R</span>
-                <span class="info-img" th:if="${order.isAudit()}">A</span>
-                <img th:if="${order.isCargo()}"
-                     class="info-img" src="https://pics66.ru/9/truck.png" alt="грузовой">
-                <img th:if="${order.isTrash()}"
-                     class="info-img" src="https://pics66.ru/9/trash.png" alt="утилизация">
+                <img class="info-img" th:if="${order.isElectro()}"
+                     src="https://pics66.ru/9/flash.png" alt="электрика">
+                <img class="info-img" th:if="${order.isRepair()}"
+                     src="https://pics66.ru/9/tools.png" alt="ремонт">
+                <img class="info-img" th:if="${order.isAudit()}"
+                     src="https://pics66.ru/9/find.png" alt="аудит">
+                <img class="info-img" th:if="${order.isCargo()}"
+                     src="https://pics66.ru/9/truck.png" alt="грузовой">
+                <img class="info-img" th:if="${order.isTrash()}"
+                     src="https://pics66.ru/9/trash.png" alt="утилизация">
                 <span class="order-status"
                       th:text="${order.getStatus().getLabelText()}"
                       th:classappend="${order.getStatus().getCss()}"></span>
@@ -451,7 +459,7 @@
         order.addEventListener('click', function (event) {
 
             const id = event.target.dataset.id;
-            const target = document.getElementById('order-'+id);
+            const target = document.getElementById('order-' + id);
 
             let flashCount = 0;
             const maxFlashes = 3;
