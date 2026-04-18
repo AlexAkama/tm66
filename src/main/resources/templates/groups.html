@@ -304,6 +304,8 @@
 </head>
 <body>
 
+<a href="/edit">Редактировать</a>
+
 <h1>KGS</h1>
 <div class="actual-time" th:text="'Актуально на ' + ${now}"></div>
 <button id="global-visible-switch">Скрыть заявки</button>
@@ -358,7 +360,7 @@
                   th:classappend="${order.getTargetDateCss()}"></span>
         </div>
 
-        <div class="order-content">
+        <div class="order-content hidden">
             <div class="create-at">
                 <span th:text="'Создана: ' + ${order.getCreatAt()}"></span> |
                 <span th:text="'Канал: ' + ${order.getChanel()}"></span>

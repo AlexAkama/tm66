@@ -100,4 +100,20 @@ public class OrderService {
                 .toList();
     }
 
+    public Map<String, String> getReturnedLinkMap() {
+        if (groups == null) return null;
+        return groups.stream()
+                .flatMap(group -> group.getOrders().stream())
+                .filter(order -> order.getStatus() == TaskStatus.RETURNED)
+                .collect(Collectors.toMap(Order::getOrderId, Order::getUrl));
+    }
+
+    public boolean hasTrash() {
+        if (groups == null) return false;
+        return groups.stream()
+                .flatMap(group -> group.getOrders().stream())
+                .anyMatch(Order::isTrash);
+    }
+
+
 }

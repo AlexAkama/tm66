@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
@@ -32,6 +33,14 @@ public class UIController {
         model.addAttribute("now", TimeUtils.now());
         model.addAttribute("admin", false);
         return "groups";
+    }
+
+    @GetMapping("/edit")
+    public String showEditForm(Model model) {
+        Map<String, String> returned = orderService.getReturnedLinkMap();
+        model.addAttribute("trash", orderService.hasTrash());
+        model.addAttribute("returned", returned);
+        return "edit";
     }
 
 }
