@@ -25,8 +25,10 @@ public class UIController {
     public String showGroups(Model model) {
         List<Group> groups = orderService.getGroups();
         List<String> nowEnd = orderService.getNowEndOrderId();
+        List<String> returned = orderService.getReturnedOrderId();
         model.addAttribute("groups", groups);
         model.addAttribute("nowEnd", nowEnd);
+        model.addAttribute("returned", returned);
         model.addAttribute("now", TimeUtils.now());
         model.addAttribute("admin", false);
         return "groups";

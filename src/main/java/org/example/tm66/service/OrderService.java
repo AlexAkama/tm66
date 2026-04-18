@@ -90,4 +90,14 @@ public class OrderService {
                 .map(Order::getOrderId)
                 .toList();
     }
+
+    public List<String> getReturnedOrderId() {
+        if (groups == null) return null;
+        return groups.stream()
+                .flatMap(group -> group.getOrders().stream())
+                .filter(order -> order.getStatus() == TaskStatus.RETURNED)
+                .map(Order::getOrderId)
+                .toList();
+    }
+
 }

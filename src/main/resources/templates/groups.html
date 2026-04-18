@@ -23,11 +23,11 @@
             margin-block-end: 0.67em;
         }
 
-        .now-end-header {
+        .category-header {
             margin: 10px 5px 5px;
         }
 
-        .now-end-order {
+        .category-order {
             margin: 3px;
             text-decoration: none;
         }
@@ -87,6 +87,10 @@
 
         .ready {
             color: lightgray;
+        }
+
+        .returned > .order-header {
+            color: red;
         }
 
         .order-id,
@@ -183,6 +187,10 @@
         .blue-mark {
             background-color: blue;
             color: white;
+        }
+
+        .blue {
+            color: blue;
         }
 
         .red-mark {
@@ -300,11 +308,24 @@
 <div class="actual-time" th:text="'Актуально на ' + ${now}"></div>
 <button id="global-visible-switch">Скрыть заявки</button>
 
-<div class="now-end" th:if="${nowEnd != null}">
-    <h3 class="now-end-header red">Заканчиваются сегодня</h3>
+<div class="returned-orders" th:if="${returned != null}">
+    <h3 class="category-header red">Возвращены</h3>
+    <div class="category-content">
+        <span th:each="orderId : ${returned}">
+            <a class="order-id red-mark category-order"
+               th:text="${orderId}"
+               th:href="'#order-'+${orderId}"
+               th:attr="data-id=${orderId}"
+            ></a>
+        </span>
+    </div>
+</div>
+
+<div class="now-end-orders" th:if="${nowEnd != null}">
+    <h3 class="category-header blue">Заканчиваются сегодня</h3>
     <div class="now-end-content">
         <span th:each="orderId : ${nowEnd}">
-            <a class="order-id blue-mark now-end-order"
+            <a class="order-id blue-mark category-order"
                th:text="${orderId}"
                th:href="'#order-'+${orderId}"
                th:attr="data-id=${orderId}"
@@ -317,85 +338,84 @@
 
     <div class="group-header" th:text="${group.getCity()} + ' | Заявок ' + ${group.orders.size()}"></div>
 
-    <div th:each="order : ${group.orders}">
+    <div class="order"
+         th:each="order : ${group.orders}"
+         th:id="'order-'+${order.getOrderId()}"
+         th:classappend="${order.getStatus().name() == 'RETURNED' ? 'returned' : ''}">
 
-        <div class="order" th:id="'order-'+${order.getOrderId()}">
-
-            <div class="order-header" th:classappend="${order.getStatus().name() == 'READY' ? 'ready' : ''}">
+        <div class="order-header" th:classappend="${order.getStatus().name() == 'READY' ? 'ready' : ''}">
                 <span class="order-id blue-mark">
                     <a target="_blank"
                        th:attr="id=${order.getOrderId()}"
                        th:text="${order.getOrderId()}"
                        th:href="${order.getUrl()}"></a>
                 </span>
-                <span class="address"
-                      th:text="${order.getAddress()} + ${order.getAddress().equals('') || order.getPoint().equals('') ? '': ','}"></span>
-                <span class="address" th:text="${order.getPoint()}"></span>
-                <span class="target-date"
-                      th:text="${order.getTargetDate()}"
-                      th:classappend="${order.getTargetDateCss()}"></span>
+            <span class="address"
+                  th:text="${order.getAddress()} + ${order.getAddress().equals('') || order.getPoint().equals('') ? '': ','}"></span>
+            <span class="address" th:text="${order.getPoint()}"></span>
+            <span class="target-date"
+                  th:text="${order.getTargetDate()}"
+                  th:classappend="${order.getTargetDateCss()}"></span>
+        </div>
+
+        <div class="order-content">
+            <div class="create-at">
+                <span th:text="'Создана: ' + ${order.getCreatAt()}"></span> |
+                <span th:text="'Канал: ' + ${order.getChanel()}"></span>
             </div>
+            <div class="tasks">
+                <table class="tasks-table">
+                    <tr class="task" th:each="task : ${order.tasks}">
+                        <td class="task-work" th:text="${task.work}"></td>
+                        <td class="task-equipment" th:text="${task.getEquipment()}"></td>
+                        <td class="task-volume" th:text="${task.volume}"></td>
+                    </tr>
+                </table>
+                <a class="response" target="_top"
+                   th:attr="data-id=${order.getOrderId()}"
+                   th:href="${order.getMailToUrl()}">ОТЧЕТ</a>
 
-            <div class="order-content">
-                <div class="create-at">
-                    <span th:text="'Создана: ' + ${order.getCreatAt()}"></span> |
-                    <span th:text="'Канал: ' + ${order.getChanel()}"></span>
-                </div>
-                <div class="tasks">
-                    <table class="tasks-table">
-                        <tr class="task" th:each="task : ${order.tasks}">
-                            <td class="task-work" th:text="${task.work}"></td>
-                            <td class="task-equipment" th:text="${task.getEquipment()}"></td>
-                            <td class="task-volume" th:text="${task.volume}"></td>
-                        </tr>
-                    </table>
-                    <a class="response" target="_top"
-                       th:attr="data-id=${order.getOrderId()}"
-                       th:href="${order.getMailToUrl()}">ОТЧЕТ</a>
-
-                    <div class="trash-comment" th:if="${order.getTrashTasks() != null}">
-                        <div class="trash-task-header">Расшифровка работ</div>
-                        <table>
-                            <tr th:each="trash : ${order.getTrashTasks()}">
-                                <td th:utext="${trash.work()}"></td>
-                                <td class="trash-task-volume" th:text="${trash.volume()}"></td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
-                <div class="comment" th:if="${order.getComment() != null}">
-                    <div class="comment-header">КОММЕНТАРИЙ:</div>
-                    <div class="comment-content" th:utext="${order.getComment()}"></div>
-                    <table class="finalize-comments" th:if="${order.getFinalizeComments() != null}">
-                        <tr th:each="comment : ${order.getFinalizeComments()}">
-                            <td class="finalize-comment-data" th:text="${comment.getShortDate()}"></td>
-                            <td class="finalize-comment-content" th:text="${comment.comment}"></td>
+                <div class="trash-comment" th:if="${order.getTrashTasks() != null}">
+                    <div class="trash-task-header">Расшифровка работ</div>
+                    <table>
+                        <tr th:each="trash : ${order.getTrashTasks()}">
+                            <td th:utext="${trash.work()}"></td>
+                            <td class="trash-task-volume" th:text="${trash.volume()}"></td>
                         </tr>
                     </table>
                 </div>
-                <div class="response-buffer" th:unless="${order.getComment() != null}"></div>
-
             </div>
-
-            <div class="order-info">
-                <img class="info-img" th:if="${order.isElectro()}"
-                     src="https://pics66.ru/9/flash.png" alt="электрика">
-                <img class="info-img" th:if="${order.isRepair()}"
-                     src="https://pics66.ru/9/tools.png" alt="ремонт">
-                <img class="info-img" th:if="${order.isAudit()}"
-                     src="https://pics66.ru/9/find.png" alt="аудит">
-                <img class="info-img" th:if="${order.isCargo()}"
-                     src="https://pics66.ru/9/truck.png" alt="грузовой">
-                <img class="info-img" th:if="${order.isTrash()}"
-                     src="https://pics66.ru/9/trash.png" alt="утилизация">
-                <span class="order-status"
-                      th:text="${order.getStatus().getLabelText()}"
-                      th:classappend="${order.getStatus().getCss()}"></span>
+            <div class="comment" th:if="${order.getComment() != null}">
+                <div class="comment-header">КОММЕНТАРИЙ:</div>
+                <div class="comment-content" th:utext="${order.getComment()}"></div>
+                <table class="finalize-comments" th:if="${order.getFinalizeComments() != null}">
+                    <tr th:each="comment : ${order.getFinalizeComments()}">
+                        <td class="finalize-comment-data" th:text="${comment.getShortDate()}"></td>
+                        <td class="finalize-comment-content" th:text="${comment.comment}"></td>
+                    </tr>
+                </table>
             </div>
-
-            <div th:if="${admin}" th:text="${order.getMailToUrl()}"></div>
+            <div class="response-buffer" th:unless="${order.getComment() != null}"></div>
 
         </div>
+
+        <div class="order-info">
+            <img class="info-img" th:if="${order.isElectro()}"
+                 src="https://pics66.ru/9/flash.png" alt="электрика">
+            <img class="info-img" th:if="${order.isRepair()}"
+                 src="https://pics66.ru/9/tools.png" alt="ремонт">
+            <img class="info-img" th:if="${order.isAudit()}"
+                 src="https://pics66.ru/9/find.png" alt="аудит">
+            <img class="info-img" th:if="${order.isCargo()}"
+                 src="https://pics66.ru/9/truck.png" alt="грузовой">
+            <img class="info-img" th:if="${order.isTrash()}"
+                 src="https://pics66.ru/9/trash.png" alt="утилизация">
+            <span class="order-status"
+                  th:text="${order.getStatus().getLabelText()}"
+                  th:classappend="${order.getStatus().getCss()}"></span>
+        </div>
+
+        <div th:if="${admin}" th:text="${order.getMailToUrl()}"></div>
 
     </div>
 
@@ -454,7 +474,7 @@
         event.addEventListener('mouseleave', () => target?.classList.remove('green-mark'));
     });
 
-    const nowEndOrders = document.querySelectorAll('.now-end-order');
+    const nowEndOrders = document.querySelectorAll('.category-order');
     nowEndOrders.forEach(order => {
         order.addEventListener('click', function (event) {
 
