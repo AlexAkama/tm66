@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.example.tm66.model.FinalizeComment;
+import org.example.tm66.model.TrashEquipment;
 import org.example.tm66.model.TrashOrder;
 import org.example.tm66.service.FinalizeCommentService;
 import org.example.tm66.service.OrderService;
@@ -17,6 +18,8 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
@@ -44,8 +47,8 @@ public class UploadController {
         }
     }
 
-    @PostMapping("/trash")
-    public ResponseEntity<?> uploadTrashContent(@RequestParam("file") MultipartFile file) {
+    @PostMapping("/trash/file")
+    public ResponseEntity<?> uploadTrashContentFile(@RequestParam("file") MultipartFile file) {
         if (file.isEmpty()) {
             return
                     ResponseEntity.badRequest().body("Файл не выбран");
@@ -54,13 +57,27 @@ public class UploadController {
                 new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8))) {
 
             List<String> lines = reader.lines().toList();
-            TrashOrder order = trashOrderService.map(lines);
-            trashOrderService.updateOrAddOrder(order);
+            trashOrderService.update(lines);
 
             return ResponseEntity.ok("Файл успешно обработан");
         } catch (Exception e) {
             log.error("Ошибка при обработке файла:", e);
             return ResponseEntity.internalServerError().body("Ошибка при обработке файла: " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/trash")
+    public ResponseEntity<?> uploadTrashContent(@ModelAttribute TrashEquipment equipment) {
+        try {
+            List<String> data = new ArrayList<>();
+            data.add(equipment.orderId());
+            String[] split = equipment.equipment().split("\n");
+            data.addAll(Arrays.stream(split).toList());
+            trashOrderService.update(data);
+            return ResponseEntity.ok("Оборудование для утилизации успешно добавлен");
+        } catch (Exception e) {
+            log.error("Ошибка при добавлении оборудования для утилизации:", e);
+            return ResponseEntity.internalServerError().body("Ошибка при добавлении комментария: " + e.getMessage());
         }
     }
 
