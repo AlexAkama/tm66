@@ -108,11 +108,12 @@ public class OrderService {
                 .collect(Collectors.toMap(Order::getOrderId, Order::getUrl));
     }
 
-    public boolean hasTrash() {
-        if (groups == null) return false;
+    public Map<String, String> getTrashLinkMap() {
+        if (groups == null) return null;
         return groups.stream()
                 .flatMap(group -> group.getOrders().stream())
-                .anyMatch(Order::isTrash);
+                .filter(Order::isTrash)
+                .collect(Collectors.toMap(Order::getOrderId, Order::getUrl));
     }
 
 

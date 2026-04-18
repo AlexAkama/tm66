@@ -6,7 +6,6 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.example.tm66.model.FinalizeComment;
 import org.example.tm66.model.TrashEquipment;
-import org.example.tm66.model.TrashOrder;
 import org.example.tm66.service.FinalizeCommentService;
 import org.example.tm66.service.OrderService;
 import org.example.tm66.service.TrashOrderService;

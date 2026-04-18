@@ -1,15 +1,11 @@
 package org.example.tm66.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.example.tm66.model.Group;
 import org.example.tm66.service.OrderService;
 import org.example.tm66.util.TimeUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-
-import java.util.List;
-import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
@@ -24,12 +20,9 @@ public class UIController {
 
     @GetMapping("/groups")
     public String showGroups(Model model) {
-        List<Group> groups = orderService.getGroups();
-        List<String> nowEnd = orderService.getNowEndOrderId();
-        List<String> returned = orderService.getReturnedOrderId();
-        model.addAttribute("groups", groups);
-        model.addAttribute("nowEnd", nowEnd);
-        model.addAttribute("returned", returned);
+        model.addAttribute("groups", orderService.getGroups());
+        model.addAttribute("nowEnd", orderService.getNowEndOrderId());
+        model.addAttribute("returned", orderService.getReturnedOrderId());
         model.addAttribute("now", TimeUtils.now());
         model.addAttribute("admin", false);
         return "groups";
@@ -37,9 +30,8 @@ public class UIController {
 
     @GetMapping("/edit")
     public String showEditForm(Model model) {
-        Map<String, String> returned = orderService.getReturnedLinkMap();
-        model.addAttribute("trash", orderService.hasTrash());
-        model.addAttribute("returned", returned);
+        model.addAttribute("trash", orderService.getTrashLinkMap());
+        model.addAttribute("returned", orderService.getReturnedLinkMap());
         return "edit";
     }
 
