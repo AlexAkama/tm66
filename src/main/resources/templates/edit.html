@@ -87,7 +87,7 @@
     </div>
 </div>
 
-<div th:if="${returned != null}">
+<div th:if="${returned != null && returned.size() > 0}">
     <h2>Добавить коммент</h2>
     <form id="addComment" method="post" action="/api/upload/comment" enctype="application/x-www-form-urlencoded">
         <label for="comment-select-orderId">ID заказа:</label>

@@ -310,7 +310,7 @@
 <div class="actual-time" th:text="'Актуально на ' + ${now}"></div>
 <button id="global-visible-switch">Скрыть заявки</button>
 
-<div class="returned-orders" th:if="${returned != null}">
+<div class="returned-orders" th:if="${returned != null && returned.size() > 0}">
     <h3 class="category-header red">Возвращены</h3>
     <div class="category-content">
         <span th:each="orderId : ${returned}">
@@ -323,7 +323,7 @@
     </div>
 </div>
 
-<div class="now-end-orders" th:if="${nowEnd != null}">
+<div class="now-end-orders" th:if="${nowEnd != null && nowEnd.size() > 0}">
     <h3 class="category-header blue">Заканчиваются сегодня</h3>
     <div class="now-end-content">
         <span th:each="orderId : ${nowEnd}">

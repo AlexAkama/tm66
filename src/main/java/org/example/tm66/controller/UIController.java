@@ -14,7 +14,7 @@ public class UIController {
     private final OrderService orderService;
 
     @GetMapping("/")
-    public String showUploadForm(Model model) {
+    public String showUploadForm() {
         return "upload";
     }
 
