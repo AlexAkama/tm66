@@ -48,6 +48,10 @@
 </head>
 <body>
 
+<div>
+    <a class="tab-button" href="/groups?admin=true">АДМИН</a>
+    <a class="tab-button" href="/groups">ПРОСМОТР</a>
+</div>
 
 <div th:if="${trash != null}">
     <h2>Загрузить расшифровку утилизации</h2>
@@ -110,10 +114,6 @@
     </form>
     <div class="message" id="addComment-message"></div>
 </div>
-
-
-<a href="/groups">ПОСМОТРЕТЬ</a>
-
 
 <script>
     const dateInput = document.getElementById('comment-date');
@@ -191,7 +191,7 @@
     }
 
     setupOrderLink('comment-select-orderId', 'commentOrderLinkContainer', 'commentOrderLink', returnedUrlMap);
-    setupOrderLink('trash-select-orderId',  'trashOrderLinkContainer',  'trashOrderLink',  trashUrlMap);
+    setupOrderLink('trash-select-orderId', 'trashOrderLinkContainer', 'trashOrderLink', trashUrlMap);
 
 </script>
 

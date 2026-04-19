@@ -15,6 +15,13 @@
             padding: 5px;
         }
 
+        .edit-button {
+            padding: 5px 10px;
+            margin: 1px 3px;
+            background-color: lightgray;
+            cursor: pointer;
+        }
+
         h1 {
             margin-block-end: unset;
         }
@@ -304,7 +311,10 @@
 </head>
 <body>
 
-<a href="/edit">Редактировать</a>
+<a th:if="${admin}"
+   class="edit-button"
+   href="/edit">РЕДАКТИРОВАТЬ
+</a>
 
 <h1>KGS</h1>
 <div class="actual-time" th:text="'Актуально на ' + ${now}"></div>
