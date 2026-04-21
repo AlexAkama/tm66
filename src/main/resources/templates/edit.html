@@ -64,14 +64,14 @@
         <div class="tab-pane active" id="tab-text">
             <form id="uploadTrashForm" method="post" action="/api/upload/trash"
                   enctype="application/x-www-form-urlencoded">
-                <label for="trash-select-orderId">ID заказа:</label>
-                <select id="trash-select-orderId" name="orderId" required>
+                <label for="select-trash-orderId">ID заказа:</label>
+                <select id="select-trash-orderId" name="orderId" required>
                     <option value="" disabled selected>Выберите ID заказа</option>
                     <option th:each="orderId : ${trash.keySet()}" th:value="${orderId}"
                             th:text="${orderId}"></option>
                 </select>
-                <div class="order-link-container" id="trashOrderLinkContainer">
-                    <a id="trashOrderLink" href="#" target="_blank"></a>
+                <div class="order-link-container" id="trash-order-link-container">
+                    <a id="trash-order-link" href="#" target="_blank"></a>
                 </div>
                 <br><br>
 
@@ -95,13 +95,13 @@
 <div th:if="${returned != null && returned.size() > 0}">
     <h2>Добавить коммент</h2>
     <form id="addComment" method="post" action="/api/upload/comment" enctype="application/x-www-form-urlencoded">
-        <label for="comment-select-orderId">ID заказа:</label>
-        <select id="comment-select-orderId" name="orderId" required>
+        <label for="select-returned-orderId">ID заказа:</label>
+        <select id="select-returned-orderId" name="orderId" required>
             <option value="" disabled selected>Выберите ID заказа</option>
             <option th:each="orderId : ${returned.keySet()}" th:value="${orderId}" th:text="${orderId}"></option>
         </select>
-        <div class="order-link-container" id="returnedOrderLinkContainer">
-            <a id="returnedOrderLink" href="#" target="_blank"></a>
+        <div class="order-link-container" id="returned-order-link-container">
+            <a id="returned-order-link" href="#" target="_blank"></a>
         </div>
         <br><br>
 
@@ -191,8 +191,8 @@
         });
     }
 
-    setupOrderLink('comment-select-orderId', 'commentOrderLinkContainer', 'commentOrderLink', returnedUrlMap);
-    setupOrderLink('trash-select-orderId', 'trashOrderLinkContainer', 'trashOrderLink', trashUrlMap);
+    setupOrderLink('select-trash-orderId', 'trash-order-link-container', 'trash-order-link', trashUrlMap);
+    setupOrderLink('select-returned-orderId', 'returned-order-link-container', 'returned-order-link', returnedUrlMap);
 
 </script>
 
