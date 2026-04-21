@@ -35,3 +35,4 @@ build/
 ### LOCAL ###
 /src/main/resources/application-local.yaml
 /upload/
+/ftp/

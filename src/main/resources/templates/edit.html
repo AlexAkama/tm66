@@ -51,9 +51,10 @@
 <div>
     <a class="tab-button" href="/groups?admin=true">АДМИН</a>
     <a class="tab-button" href="/groups">ПРОСМОТР</a>
+    <a class="tab-button" href="/api/upload/ftp?user=KGS">ВЫГРУЗИТЬ</a>
 </div>
 
-<div th:if="${trash != null}">
+<div th:if="${trash != null && trash.size() > 0}">
     <h2>Загрузить расшифровку утилизации</h2>
     <div class="tabs">
         <span class="tab-button active" data-tab="tab-text">Text</span>

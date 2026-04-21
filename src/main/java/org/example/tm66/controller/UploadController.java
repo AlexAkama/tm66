@@ -6,14 +6,13 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.example.tm66.model.FinalizeComment;
 import org.example.tm66.model.TrashEquipment;
-import org.example.tm66.service.FinalizeCommentService;
-import org.example.tm66.service.OrderService;
-import org.example.tm66.service.TrashOrderService;
+import org.example.tm66.service.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
@@ -30,6 +29,7 @@ public class UploadController {
     private final OrderService orderService;
     private final TrashOrderService trashOrderService;
     private final FinalizeCommentService finalizeCommentService;
+    private final IntegrationService integrationService;
 
     @PostMapping("tasks")
     public ResponseEntity<?> uploadXlsx(@RequestParam("file") MultipartFile file) {
@@ -81,7 +81,7 @@ public class UploadController {
     }
 
     @PostMapping("/comment")
-    public ResponseEntity<?> addComment(@ModelAttribute FinalizeComment comment) {
+    public ResponseEntity<?> uploadComment(@ModelAttribute FinalizeComment comment) {
         try {
             finalizeCommentService.add(comment);
             return ResponseEntity.ok("Комментарий успешно добавлен");
@@ -89,6 +89,12 @@ public class UploadController {
             log.error("Ошибка при добавлении комментария:", e);
             return ResponseEntity.internalServerError().body("Ошибка при добавлении комментария: " + e.getMessage());
         }
+    }
+
+    @GetMapping("/ftp")
+    public ResponseEntity<?> tpFTP(@RequestParam(name = "user") String user) throws IOException {
+        integrationService.upload(user);
+        return ResponseEntity.ok("Успешная загрузка на FTP");
     }
 
 }
