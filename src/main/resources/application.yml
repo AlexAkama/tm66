@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: TM66
+
+user:
+  kgs:
+    email: ${KGS_EMAIL}
+    ftp-path: ${KGS_FTP}
+
+app:
+  ftp:
+    host: ${HOST}
+    port: ${PORT}
+    user: ${USER}
+    password: ${PSW}
