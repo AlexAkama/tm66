@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.example.tm66.processor.Normalizer;
+import org.example.tm66.util.TimeUtils;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -62,6 +63,10 @@ public class Order {
 
     public LocalDate getTargetDate() {
         return tasks.getFirst().getTargetDate();
+    }
+
+    public String getTargetDateString() {
+        return TimeUtils.date(getTargetDate());
     }
 
     public String getTargetDateCss() {

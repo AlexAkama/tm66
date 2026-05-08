@@ -12,7 +12,8 @@ import java.util.Date;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class TimeUtils {
 
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
+    private static final DateTimeFormatter DATE_TIME = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
+    private static final DateTimeFormatter DATE = DateTimeFormatter.ofPattern("dd.MM.yyyy");
     private static final DateTimeFormatter SHORT = DateTimeFormatter.ofPattern("dd.MM");
 
 
@@ -21,10 +22,14 @@ public final class TimeUtils {
     }
 
     public static String now() {
-        return LocalDateTime.now().format(FORMATTER);
+        return LocalDateTime.now().format(DATE_TIME);
     }
 
-    public static String shortData(LocalDate date) {
+    public static String date(LocalDate date) {
+        return date.format(DATE);
+    }
+
+    public static String shortDate(LocalDate date) {
         return date.format(SHORT);
     }
 

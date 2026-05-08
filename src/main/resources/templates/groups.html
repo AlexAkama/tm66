@@ -318,7 +318,7 @@
 
 <h1>KGS</h1>
 <div class="actual-time" th:text="'Актуально на ' + ${now}"></div>
-<button id="global-visible-switch">Скрыть заявки</button>
+<button id="global-visible-switch">Показать заявки</button>
 
 <div class="returned-orders" th:if="${returned != null && returned.size() > 0}">
     <h3 class="category-header red">Возвращены</h3>
@@ -356,9 +356,8 @@
          th:classappend="${order.getStatus().name() == 'RETURNED' ? 'returned' : ''}">
 
         <div class="order-header" th:classappend="${order.getStatus().name() == 'READY' ? 'ready' : ''}">
-                <span class="order-id blue-mark">
+                <span class="order-id blue-mark" th:attr="id=${order.getOrderId()}">
                     <a target="_blank"
-                       th:attr="id=${order.getOrderId()}"
                        th:text="${order.getOrderId()}"
                        th:href="${order.getUrl()}"></a>
                 </span>
@@ -366,7 +365,7 @@
                   th:text="${order.getAddress()} + ${order.getAddress().equals('') || order.getPoint().equals('') ? '': ','}"></span>
             <span class="address" th:text="${order.getPoint()}"></span>
             <span class="target-date"
-                  th:text="${order.getTargetDate()}"
+                  th:text="${order.getTargetDateString()}"
                   th:classappend="${order.getTargetDateCss()}"></span>
         </div>
 

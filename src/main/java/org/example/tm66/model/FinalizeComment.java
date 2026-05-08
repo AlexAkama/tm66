@@ -7,7 +7,7 @@ import java.time.LocalDate;
 public record FinalizeComment(String orderId, LocalDate date, String comment) {
 
     public String getShortDate() {
-        return TimeUtils.shortData(date);
+        return TimeUtils.shortDate(date);
     }
 
 }
