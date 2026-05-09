@@ -118,8 +118,9 @@
 
 <script>
     const dateInput = document.getElementById('comment-date');
-    const today = new Date().toISOString().split('T')[0];
-    dateInput.value = today;
+    if (dateInput) {
+        dateInput.value = new Date().toISOString().split('T')[0];
+    }
 
 
     function handleFormSubmit(formId, redirectUrl) {
@@ -175,6 +176,8 @@
 
     function setupOrderLink(selectId, containerId, linkId, urlMap) {
         const selectElement = document.getElementById(selectId);
+        if (!selectElement) return;
+
         const linkContainer = document.getElementById(containerId);
         const linkElement = document.getElementById(linkId);
 
