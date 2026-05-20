@@ -9,6 +9,7 @@ public enum TaskStatus {
     NEW("НОВАЯ", "yellow-mark"),
     WAITING("ОЖИДАЕТ", "olive-mark"),
     CONFIRMED("OK", "green-mark"),
+    IN_PROGRESS("В РАБОТЕ", "green-mark"),
     RETURNED("ВОЗВРАЩЕНА", "red-mark"),
     READY("ВЫПОЛНЕНА", "sky-blue-mark");
 
@@ -20,6 +21,7 @@ public enum TaskStatus {
             case "Новая" -> NEW;
             case "Ожидание" -> WAITING;
             case "Подтверждена", "Подтверждена вторым уровнем" -> CONFIRMED;
+            case "В работе" -> IN_PROGRESS;
             case "Возвращена" -> RETURNED;
             case "Выполнена", "Утилизация отчет ДО" -> READY;
             default -> throw new IllegalStateException("Не обрабатываемое значение статуса заявки: " + s);

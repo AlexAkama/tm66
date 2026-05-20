@@ -93,7 +93,11 @@
         }
 
         .ready {
-            color: lightgray;
+            opacity: .3;
+        }
+
+        .in-progress {
+            background-color: lightgreen;
         }
 
         .returned > .order-header {
@@ -289,9 +293,8 @@
         }
 
         @media (max-width: 560px) {
-            .order-status {
-                font-size: 0;
-                border-radius: 50%;
+            .task-equipment {
+                font-size: smaller;
             }
         }
 
@@ -355,7 +358,9 @@
          th:id="'order-'+${order.getOrderId()}"
          th:classappend="${order.getStatus().name() == 'RETURNED' ? 'returned' : ''}">
 
-        <div class="order-header" th:classappend="${order.getStatus().name() == 'READY' ? 'ready' : ''}">
+        <div class="order-header"
+             th:classappend="${order.getStatus().name() == 'READY' ? 'ready' : (order.getStatus().name() == 'IN_PROGRESS' ? 'in-progress' : '')}"
+        >
                 <span class="order-id blue-mark" th:attr="id=${order.getOrderId()}">
                     <a target="_blank"
                        th:text="${order.getOrderId()}"
