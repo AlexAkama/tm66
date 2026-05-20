@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <title>Главная</title>
+</head>
+<body>
+<div th:if="${user != null}">
+    <p>Вы вошли как: <span th:text="${user.username}"></span></p>
+    <p><a th:href="@{/upload}">Дальше...</a></p>
+    <a th:href="@{/logout}">Выйти</a>
+</div>
+<div th:unless="${user != null}">
+    Пожалуйста, <a th:href="@{/login}">войдите</a> в систему.
+</div>
+</body>
+</html>
