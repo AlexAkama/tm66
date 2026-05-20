@@ -2,6 +2,10 @@ spring:
   application:
     name: TM66
 
+upload:
+  comment-dir: upload
+  worker-dir: worker
+
 user:
   kgs:
     email: ${KGS_EMAIL}

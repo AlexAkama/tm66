@@ -1,5 +1,6 @@
 package org.example.tm66.service;
 
+import org.example.tm66.config.UploadConfig;
 import org.example.tm66.model.TrashOrder;
 import org.example.tm66.model.TrashTask;
 import org.springframework.stereotype.Service;
@@ -20,7 +21,11 @@ import java.util.stream.Collectors;
 public class TrashOrderService {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private final Path filePath = Paths.get("upload/trash_orders.json");
+    private final Path filePath;
+
+    public TrashOrderService(UploadConfig uploadConfig) {
+        this.filePath = Paths.get(uploadConfig.getCommentDir() + "/trash_orders.json");
+    }
 
     public void update(List<String> lines) {
         TrashOrder order = map(lines);

@@ -1,6 +1,6 @@
 package org.example.tm66.service;
 
-
+import org.example.tm66.config.UploadConfig;
 import org.example.tm66.model.FinalizeComment;
 import org.springframework.stereotype.Service;
 import tools.jackson.core.type.TypeReference;
@@ -18,7 +18,11 @@ import java.util.stream.Collectors;
 public class FinalizeCommentService {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private final Path filePath = Paths.get("upload/finalize_comments.json");
+    private final Path filePath;
+
+    public FinalizeCommentService(UploadConfig uploadConfig) {
+        filePath = Paths.get(uploadConfig.getCommentDir() + "/finalize_comments.json");
+    }
 
     public void add(FinalizeComment comment) {
         List<FinalizeComment> comments = readCommentsFromFile();

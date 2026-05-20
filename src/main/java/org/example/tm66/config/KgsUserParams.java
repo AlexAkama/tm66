@@ -24,7 +24,7 @@ public class KgsUserParams implements UserParams {
 
     @PostConstruct
     void init() {
-        log.info("[INIT] KGS email: {}, ftp-path: {}", email, ftpPath);
+        log.info("[INIT] User KGS email: {}, ftp-path: {}", email, ftpPath);
     }
 
     public String getName() {
