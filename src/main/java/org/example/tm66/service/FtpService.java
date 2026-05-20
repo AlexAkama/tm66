@@ -30,7 +30,7 @@ public class FtpService {
             ftpClient.enterLocalPassiveMode();
             ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
 
-            try (InputStream inputStream = Files.newInputStream(Path.of(uploadConfig.getWorkerDir() + "/" + userParams.getName() + ".html"))) {
+            try (InputStream inputStream = Files.newInputStream(Path.of(uploadConfig.getWorkerDir() + "/" + userParams.getName().toLowerCase() + ".html"))) {
                 ftpClient.storeFile(userParams.getFtpPath() + "/index.html", inputStream);
             }
             log.info("Данные для {} успешно отправлены на FTP", userParams.getName());

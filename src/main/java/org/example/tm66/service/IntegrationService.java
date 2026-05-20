@@ -20,14 +20,23 @@ public class IntegrationService {
     private final FtpService ftpService;
     private final List<UserParams> userParamsList;
 
-    public void upload(@NotNull String user) throws IOException {
-        UserParams userParams = getUserParams(user);
-        generateHtmlAndSendToFtp(userParams);
+    public void uploadToFtp(@NotNull String user) throws IOException {
+        UserParams params = getUserParams(user);
+        generateHtmlAndSendToFtp(params);
+    }
+
+    public void save(@NotNull String user) {
+        UserParams params = getUserParams(user);
+        generateHtml(params);
     }
 
     private void generateHtmlAndSendToFtp(UserParams params) throws IOException {
-        htmlGeneratorService.generateGroupsHtml(uploadConfig.getWorkerDir() + "/" + params.getName() + ".html");
+        generateHtml(params);
         ftpService.uploadUserFile(params);
+    }
+
+    private void generateHtml(UserParams params) {
+        htmlGeneratorService.generateGroupsHtml(uploadConfig.getWorkerDir() + "/" + params.getName().toLowerCase() + ".html");
     }
 
     private UserParams getUserParams(@NotNull String user) {

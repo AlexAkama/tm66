@@ -49,9 +49,14 @@
 <body>
 
 <div>
+    <p th:if="${#authentication != null}">Вы вошли как: <span th:text="${#authentication.name}"></span></p>
+</div>
+
+<div>
     <a class="tab-button" href="/groups?admin=true">АДМИН</a>
     <a class="tab-button" href="/groups">ПРОСМОТР</a>
     <a class="tab-button" href="/api/upload/ftp?user=KGS">ВЫГРУЗИТЬ</a>
+    <a class="tab-button" href="/api/upload/static?user=KGS">СОХРАНИТЬ</a>
 </div>
 
 <div th:if="${trash != null && trash.size() > 0}">

@@ -92,9 +92,15 @@ public class UploadController {
     }
 
     @GetMapping("/ftp")
-    public ResponseEntity<?> tpFTP(@RequestParam(name = "user") String user) throws IOException {
-        integrationService.upload(user);
+    public ResponseEntity<?> toFTP(@RequestParam(name = "user") String user) throws IOException {
+        integrationService.uploadToFtp(user);
         return ResponseEntity.ok("Успешная загрузка на FTP");
+    }
+
+    @GetMapping("/static")
+    public ResponseEntity<?> save(@RequestParam(name = "user") String user) {
+        integrationService.save(user);
+        return ResponseEntity.ok("Файл успешно сохранен для " + user);
     }
 
 }
