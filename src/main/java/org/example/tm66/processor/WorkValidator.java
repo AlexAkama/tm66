@@ -3,6 +3,9 @@ package org.example.tm66.processor;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 import static org.apache.logging.log4j.util.Strings.isBlank;
@@ -10,16 +13,19 @@ import static org.apache.logging.log4j.util.Strings.isBlank;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class WorkValidator {
 
-    private static final Set<String> CARGO = Set.of(
-            "Монтаж шкафа",
-            "Демонтаж шкафа",
-            "Монтаж подвесного шкафа",
-            "Демонтаж подвесного шкафа",
-            "Монтаж комплекта",
-            "Демонтаж комплекта",
-            "Монтаж напольного диспенсера",
-            "Демонтаж напольного диспенсера"
-    );
+    private static final Set<String> CARGO =
+            Collections.unmodifiableSet(
+                    new HashSet<>(Arrays.asList(
+                            "Монтаж шкафа",
+                            "Демонтаж шкафа",
+                            "Монтаж подвесного шкафа",
+                            "Демонтаж подвесного шкафа",
+                            "Монтаж комплекта",
+                            "Демонтаж комплекта",
+                            "Монтаж напольного диспенсера",
+                            "Демонтаж напольного диспенсера"
+                    ))
+            );
 
     private static final String TRASH = "Утилизация оборудования";
 

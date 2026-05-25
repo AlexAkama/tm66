@@ -17,15 +17,24 @@ public enum TaskStatus {
     private final String css;
 
     public static TaskStatus get(String s) {
-        return switch (s) {
-            case "Новая" -> NEW;
-            case "Ожидание" -> WAITING;
-            case "Подтверждена", "Подтверждена вторым уровнем" -> CONFIRMED;
-            case "В работе" -> IN_PROGRESS;
-            case "Возвращена" -> RETURNED;
-            case "Выполнена", "Утилизация отчет ДО" -> READY;
-            default -> throw new IllegalStateException("Не обрабатываемое значение статуса заявки: " + s);
-        };
+        switch (s) {
+            case "Новая":
+                return NEW;
+            case "Ожидание":
+                return WAITING;
+            case "Подтверждена":
+            case "Подтверждена вторым уровнем":
+                return CONFIRMED;
+            case "В работе":
+                return IN_PROGRESS;
+            case "Возвращена":
+                return RETURNED;
+            case "Выполнена":
+            case "Утилизация отчет ДО":
+                return READY;
+            default:
+                throw new IllegalStateException("Не обрабатываемое значение статуса заявки: " + s);
+        }
     }
 
 }

@@ -5,14 +5,12 @@ import lombok.NoArgsConstructor;
 import org.example.tm66.model.RowDto;
 import org.example.tm66.model.Task;
 import org.example.tm66.model.TaskStatus;
-import org.example.tm66.processor.WorkValidator;
-import org.example.tm66.processor.Normalizer;
 import org.example.tm66.processor.Locations;
+import org.example.tm66.processor.Normalizer;
+import org.example.tm66.processor.WorkValidator;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.apache.logging.log4j.util.Strings.isBlank;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
@@ -27,10 +25,13 @@ public class TaskMapper {
 
     private static final Map<String, String> COMMENT_MAP = new HashMap<>();
 
-    private static final Set<String> FILTERED_WORKS = Set.of(
-            "Легковой выезд в тт",
-            "Грузовой выезд в тт (монтаж/демонтаж)"
-    );
+    private static final Set<String> FILTERED_WORKS =
+            Collections.unmodifiableSet(
+                    new HashSet<>(Arrays.asList(
+                            "Легковой выезд в тт",
+                            "Грузовой выезд в тт (монтаж/демонтаж)"
+                    ))
+            );
 
     public static void init() {
         COMMENT_MAP.clear();
@@ -42,7 +43,7 @@ public class TaskMapper {
                 .filter(row -> row.getVolume() > 0)
                 .filter(row -> !FILTERED_WORKS.contains(row.getWorkGroup()))
                 .map(TaskMapper::map)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     public static Task map(RowDto row) {
@@ -149,14 +150,14 @@ public class TaskMapper {
         boolean jtiCommentNotBlank = isNotBlank(jtiComment);
         if (jtiCommentNotBlank) jtiComment = "JTI:" + lineSeparator + jtiComment;
 
-        if (jtiCommentNotBlank && !sb.isEmpty()) sb.append(lineSeparator);
+        if (jtiCommentNotBlank && sb.length() > 0) sb.append(lineSeparator);
         sb.append(jtiComment);
 
         String executorComment = row.getExecutorComment();
         boolean executorCommentNotBlank = isNotBlank(executorComment);
         if (executorCommentNotBlank) executorComment = "ИНФОРМАЦИЯ:" + lineSeparator + executorComment;
 
-        if (executorCommentNotBlank && !sb.isEmpty()) sb.append(lineSeparator);
+        if (executorCommentNotBlank && sb.length() > 0) sb.append(lineSeparator);
         sb.append(executorComment);
 
         String comment = sb.toString();

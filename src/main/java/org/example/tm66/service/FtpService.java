@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
-import java.nio.file.Path;
+import java.nio.file.Paths;
 
 @Slf4j
 @Service
@@ -30,7 +30,7 @@ public class FtpService {
             ftpClient.enterLocalPassiveMode();
             ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
 
-            try (InputStream inputStream = Files.newInputStream(Path.of(uploadConfig.getWorkerDir() + "/" + userParams.getName().toLowerCase() + ".html"))) {
+            try (InputStream inputStream = Files.newInputStream(Paths.get(uploadConfig.getWorkerDir() + "/" + userParams.getName().toLowerCase() + ".html"))) {
                 ftpClient.storeFile(userParams.getFtpPath() + "/index.html", inputStream);
             }
             log.info("Данные для {} успешно отправлены на FTP", userParams.getName());

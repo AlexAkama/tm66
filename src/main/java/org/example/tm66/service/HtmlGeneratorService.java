@@ -5,12 +5,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.tm66.util.TimeUtils;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
-import org.thymeleaf.spring6.SpringTemplateEngine;
+import org.thymeleaf.spring5.SpringTemplateEngine;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 @Slf4j
 @Service
@@ -21,7 +22,7 @@ public class HtmlGeneratorService {
     private final SpringTemplateEngine templateEngine;
 
     public void generateGroupsHtml(String path) {
-        Path outputPath = Path.of(path);
+        Path outputPath = Paths.get(path);
         Context context = new Context();
         context.setVariable("groups", orderService.getGroups());
         context.setVariable("nowEnd", orderService.getNowEndOrderId());
@@ -29,7 +30,7 @@ public class HtmlGeneratorService {
         context.setVariable("now", TimeUtils.now());
         String html = templateEngine.process("groups", context);
         try {
-            Files.writeString(outputPath, html, StandardCharsets.UTF_8);
+            Files.write(outputPath, html.getBytes(StandardCharsets.UTF_8));
             log.info("html удачно сформирован и сохранен: {}", path);
         } catch (IOException e) {
             throw new RuntimeException("Не смогли сохранить сгенерированный html", e);

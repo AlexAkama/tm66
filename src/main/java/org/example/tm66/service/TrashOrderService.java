@@ -1,12 +1,13 @@
 package org.example.tm66.service;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.tm66.config.UploadConfig;
 import org.example.tm66.model.TrashOrder;
 import org.example.tm66.model.TrashTask;
 import org.springframework.stereotype.Service;
-import tools.jackson.core.type.TypeReference;
-import tools.jackson.databind.ObjectMapper;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -20,20 +21,21 @@ import java.util.stream.Collectors;
 @Service
 public class TrashOrderService {
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper;
     private final Path filePath;
 
-    public TrashOrderService(UploadConfig uploadConfig) {
+    public TrashOrderService(ObjectMapper objectMapper, UploadConfig uploadConfig) {
+        this.objectMapper = objectMapper;
         this.filePath = Paths.get(uploadConfig.getCommentDir() + "/trash_orders.json");
     }
 
-    public void update(List<String> lines) {
+    public void update(List<String> lines) throws IOException {
         TrashOrder order = map(lines);
         updateOrAddOrder(order);
     }
 
     private TrashOrder map(List<String> lines) {
-        String orderId = lines.getFirst();
+        String orderId = lines.get(0);
         List<TrashTask> tasks = new ArrayList<>();
         for (int i = 1; i < lines.size(); i++) {
             String s = lines.get(i);
@@ -46,9 +48,9 @@ public class TrashOrderService {
         return new TrashOrder(orderId, tasks);
     }
 
-    private void updateOrAddOrder(TrashOrder order) {
+    private void updateOrAddOrder(TrashOrder order) throws IOException {
         List<TrashOrder> orders = readOrdersFromFile();
-        Optional<Integer> index = findOrderIndexById(orders, order.orderId());
+        Optional<Integer> index = findOrderIndexById(orders, order.getOrderId());
         if (index.isPresent()) {
             orders.set(index.get(), order);
         } else {
@@ -57,14 +59,14 @@ public class TrashOrderService {
         saveOrdersToFile(orders);
     }
 
-    public Map<String, TrashOrder> getMapByOrderId() {
+    public Map<String, TrashOrder> getMapByOrderId() throws IOException {
         return readOrdersFromFile().stream()
-                .collect(Collectors.toMap(TrashOrder::orderId, Function.identity()));
+                .collect(Collectors.toMap(TrashOrder::getOrderId, Function.identity()));
     }
 
-    private List<TrashOrder> readOrdersFromFile() {
+    private List<TrashOrder> readOrdersFromFile() throws IOException {
         if (Files.exists(filePath)) {
-            return objectMapper.readValue(filePath.toFile(), new TypeReference<>() {
+            return objectMapper.readValue(filePath.toFile(), new TypeReference<List<TrashOrder>>() {
             });
         } else {
             return new ArrayList<>();
@@ -73,14 +75,14 @@ public class TrashOrderService {
 
     private Optional<Integer> findOrderIndexById(List<TrashOrder> orders, String orderId) {
         for (int i = 0; i < orders.size(); i++) {
-            if (orders.get(i).orderId().equals(orderId)) {
+            if (orders.get(i).getOrderId().equals(orderId)) {
                 return Optional.of(i);
             }
         }
         return Optional.empty();
     }
 
-    private void saveOrdersToFile(List<TrashOrder> orders) {
+    private void saveOrdersToFile(List<TrashOrder> orders) throws IOException {
         objectMapper.writerWithDefaultPrettyPrinter().writeValue(filePath.toFile(), orders);
     }
 

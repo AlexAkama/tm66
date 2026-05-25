@@ -6,7 +6,10 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.example.tm66.model.FinalizeComment;
 import org.example.tm66.model.TrashEquipment;
-import org.example.tm66.service.*;
+import org.example.tm66.service.FinalizeCommentService;
+import org.example.tm66.service.IntegrationService;
+import org.example.tm66.service.OrderService;
+import org.example.tm66.service.TrashOrderService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,6 +22,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -55,7 +59,7 @@ public class UploadController {
         try (BufferedReader reader = new BufferedReader(
                 new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8))) {
 
-            List<String> lines = reader.lines().toList();
+            List<String> lines = reader.lines().collect(Collectors.toList());
             trashOrderService.update(lines);
 
             return ResponseEntity.ok("Файл успешно обработан");
@@ -69,9 +73,9 @@ public class UploadController {
     public ResponseEntity<?> uploadTrashContent(@ModelAttribute TrashEquipment equipment) {
         try {
             List<String> data = new ArrayList<>();
-            data.add(equipment.orderId());
-            String[] split = equipment.equipment().split("\n");
-            data.addAll(Arrays.stream(split).toList());
+            data.add(equipment.getOrderId());
+            String[] split = equipment.getEquipment().split("\n");
+            data.addAll(Arrays.stream(split).collect(Collectors.toList()));
             trashOrderService.update(data);
             return ResponseEntity.ok("Оборудование для утилизации успешно добавлен");
         } catch (Exception e) {

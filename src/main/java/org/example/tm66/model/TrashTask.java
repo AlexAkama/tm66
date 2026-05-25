@@ -1,4 +1,15 @@
 package org.example.tm66.model;
 
-public record TrashTask(String work, int volume) {
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class TrashTask {
+    String work;
+    int volume;
 }

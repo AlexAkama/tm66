@@ -1,12 +1,12 @@
 package org.example.tm66.service;
 
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.tm66.config.UploadConfig;
 import org.example.tm66.model.UserParams;
 import org.springframework.stereotype.Service;
 
+import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.util.List;
 
