@@ -1,12 +1,13 @@
 package org.example.tm66.config;
 
-import jakarta.annotation.PostConstruct;
-import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
+
+import javax.annotation.PostConstruct;
+import javax.validation.constraints.NotEmpty;
 
 @Slf4j
 @Getter

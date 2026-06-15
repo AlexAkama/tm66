@@ -11,6 +11,7 @@ import org.example.tm66.model.*;
 import org.example.tm66.processor.ParseProcessor;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
@@ -30,12 +31,12 @@ public class OrderService {
     private Workbook workbook;
     private List<Group> groups;
 
-    public void process(Workbook w) {
+    public void process(Workbook w) throws IOException {
         this.workbook = w;
         process();
     }
 
-    public void process() {
+    public void process() throws IOException {
         if (this.workbook == null) return;
 
         Sheet sheet = this.workbook.getSheetAt(0);
@@ -54,7 +55,7 @@ public class OrderService {
                 .stream()
                 .map(t -> new Order(t, kgsUserParams.getEmail()))
                 .sorted(Comparator.comparing(Order::getTargetDate))
-                .toList();
+                .collect(Collectors.toList());
 
         Map<String, TrashOrder> trashMap = trashOrderService.getMapByOrderId();
         Map<String, List<FinalizeComment>> commentMap = finalizeCommentService.getMapByOrderId();
@@ -62,7 +63,7 @@ public class OrderService {
             String orderId = order.getOrderId();
             if (trashMap.containsKey(orderId)) {
                 TrashOrder trashOrder = trashMap.get(orderId);
-                order.setTrashTasks(trashOrder.tasks());
+                order.setTrashTasks(trashOrder.getTasks());
             }
             if (commentMap.containsKey(orderId)) {
                 List<FinalizeComment> comments = commentMap.get(orderId);
@@ -77,7 +78,7 @@ public class OrderService {
                 .stream()
                 .map(Group::new)
                 .sorted(Comparator.comparing(Group::getLocation))
-                .toList();
+                .collect(Collectors.toList());
     }
 
     public List<String> getNowEndOrderId() {
@@ -88,7 +89,7 @@ public class OrderService {
                 .filter(order -> order.getStatus() != TaskStatus.READY)
                 .filter(order -> order.getTargetDate().equals(now))
                 .map(Order::getOrderId)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     public List<String> getReturnedOrderId() {
@@ -97,7 +98,7 @@ public class OrderService {
                 .flatMap(group -> group.getOrders().stream())
                 .filter(order -> order.getStatus() == TaskStatus.RETURNED)
                 .map(Order::getOrderId)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     public Map<String, String> getReturnedLinkMap() {

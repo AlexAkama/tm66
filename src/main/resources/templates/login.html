@@ -1,19 +1,58 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="ru">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Вход</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            height: 100%;
+            max-width: 600px;
+            margin: auto;
+            padding: 5px;
+            font-size: 32px;
+        }
+
+        #login-form input {
+            line-height: 32px;
+        }
+
+        #login-form button {
+            font-size: 24px;
+        }
+
+        .version {
+            position: absolute;
+            bottom: -2em;
+            left: 30%;
+        }
+
+    </style>
 </head>
 <body>
-<h1>Вход</h1>
-<div th:if="${param.error}" style="color:red">
-    Неверный логин или пароль.
+
+<div class="container">
+    <h1>Вход</h1>
+    <div th:if="${param.error}" style="color:red">
+        Неверный логин или пароль.
+    </div>
+    <form id="login-form" method="post" th:action="@{/login}">
+        <label for="username">Логин:</label><br/>
+        <input id="username" type="text" name="username"/><br/>
+        <label for="password">Пароль:</label><br/>
+        <input id="password" type="password" name="password"/><br/>
+        <br/>
+        <button type="submit">Войти</button>
+    </form>
+    <div class="version" th:text="${version}">111</div>
 </div>
-<form method="post" th:action="@{/login}">
-    <label for="username">Логин:</label><br/>
-    <input id="username" type="text" name="username"/><br/>
-    <label for="password">Пароль:</label><br/>
-    <input id="password" type="password" name="password"/><br/>
-    <button type="submit">Войти</button>
-</form>
+
 </body>
 </html>

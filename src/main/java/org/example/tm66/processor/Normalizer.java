@@ -94,7 +94,7 @@ public final class Normalizer {
         ADDRESS_REMOVE.add("пр-т");
 
         ADDRESS_SPECIAL_REMOVE = new HashMap<>();
-        ADDRESS_SPECIAL_REMOVE.put("Сосьва", List.of("Серовский Р-н, "));
+        ADDRESS_SPECIAL_REMOVE.put("Сосьва", Collections.singletonList("Серовский Р-н, "));
 
         POINT_FORM_REMOVE = new HashSet<>();
         POINT_FORM_REMOVE.add("ИП");
@@ -122,6 +122,9 @@ public final class Normalizer {
         address = address.replace(" , ", " ");
         address = address.replaceAll("\\s+", " ");
         address = specialRemove(address, city);
+        while (address.startsWith(city + ",")) {
+            address = address.substring(city.length() + 1).trim();
+        }
         return address.trim();
     }
 

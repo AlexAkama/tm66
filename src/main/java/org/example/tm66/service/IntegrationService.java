@@ -1,12 +1,12 @@
 package org.example.tm66.service;
 
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.tm66.config.UploadConfig;
 import org.example.tm66.model.UserParams;
 import org.springframework.stereotype.Service;
 
+import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.util.List;
 
@@ -20,9 +20,10 @@ public class IntegrationService {
     private final FtpService ftpService;
     private final List<UserParams> userParamsList;
 
-    public void uploadToFtp(@NotNull String user) throws IOException {
+    public UserParams uploadToFtp(@NotNull String user) throws IOException {
         UserParams params = getUserParams(user);
         generateHtmlAndSendToFtp(params);
+        return params;
     }
 
     public void save(@NotNull String user) {

@@ -2,24 +2,77 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Загрузка файла</title>
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            height: 100%;
+            max-width: 600px;
+            margin: auto;
+            padding: 5px;
+            font-size: 32px;
+        }
+
+        #uploadXlsxForm button,
+        #uploadXlsxForm input {
+            display: block;
+            margin: 5px;
+            font-size: 24px;
+        }
+
+        #file-input {
+            display: none !important;
+        }
+
         .message {
-            min-width: 1.2em;
+            min-width: 24px;
+        }
+
+        .version {
+            position: absolute;
+            bottom: -2em;
+            left: 30%;
         }
     </style>
 </head>
 <body>
-<div>
-    <h2>Загрузить задачи</h2>
-    <form id="uploadXlsxForm" method="post" action="/api/upload/tasks" enctype="multipart/form-data">
-        <input type="file" name="file" accept=".xlsx" required/>
-        <button type="submit">Загрузить</button>
-    </form>
-    <div class="message" id="uploadXlsxForm-message"></div>
+
+<div class="container">
+    <div>
+        <h1>Загрузить задачи</h1>
+        <form id="uploadXlsxForm" method="post" action="/api/upload/tasks" enctype="multipart/form-data">
+            <label for="file-input" class="file-button">Выберите файл</label>
+            <input id="file-input" type="file" name="file" accept=".xlsx,.xls" required/>
+            <br>
+            <div id="file-name" class="file-status">Файл не выбран</div>
+            <br>
+            <button type="submit">Загрузить</button>
+        </form>
+        <div class="message" id="uploadXlsxForm-message"></div>
+    </div>
+    <div class="version" th:text="${version}"></div>
+
 </div>
 
 <script>
+    const fileInput = document.getElementById('file-input');
+    const fileNameSpan = document.getElementById('file-name');
+
+    fileInput.addEventListener('change', function() {
+        if (this.files && this.files.length > 0) {
+            fileNameSpan.textContent = this.files[0].name;
+        } else {
+            fileNameSpan.textContent = 'Файл не выбран';
+        }
+    });
+
     function handleFormSubmit(formId, redirectUrl) {
 
         const form = document.getElementById(formId);
@@ -47,6 +100,7 @@
                 });
         };
     }
+
     handleFormSubmit('uploadXlsxForm', '/edit');
 </script>
 

@@ -395,8 +395,8 @@
                     <div class="trash-task-header">Расшифровка работ</div>
                     <table>
                         <tr th:each="trash : ${order.getTrashTasks()}">
-                            <td th:utext="${trash.work()}"></td>
-                            <td class="trash-task-volume" th:text="${trash.volume()}"></td>
+                            <td th:utext="${trash.getWork()}"></td>
+                            <td class="trash-task-volume" th:text="${trash.getVolume()}"></td>
                         </tr>
                     </table>
                 </div>
@@ -407,7 +407,7 @@
                 <table class="finalize-comments" th:if="${order.getFinalizeComments() != null}">
                     <tr th:each="comment : ${order.getFinalizeComments()}">
                         <td class="finalize-comment-data" th:text="${comment.getShortDate()}"></td>
-                        <td class="finalize-comment-content" th:text="${comment.comment}"></td>
+                        <td class="finalize-comment-content" th:text="${comment.getComment()}"></td>
                     </tr>
                 </table>
             </div>
@@ -437,7 +437,7 @@
 
 </div>
 
-<div class="footer">2018-2026 © Алексей Маслов</div>
+<div class="footer" th:text="'2018-2026 © Алексей Маслов (' + ${version} + ')'"></div>
 
 <script>
     const switchButton = document.getElementById('global-visible-switch');

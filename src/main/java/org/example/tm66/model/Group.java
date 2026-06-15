@@ -12,11 +12,11 @@ public class Group {
     private final List<Order> orders;
 
     public String getCity() {
-        return orders.getFirst().getCity();
+        return orders.get(0).getCity();
     }
 
     public String getLocation() {
-        return orders.getFirst().getLocation();
+        return orders.get(0).getLocation();
     }
 
     @Override

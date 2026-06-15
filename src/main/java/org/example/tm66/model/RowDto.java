@@ -33,22 +33,54 @@ public class RowDto {
         if (cell == null) return;
         try {
             switch (field) {
-                case ORDER_TYPE -> this.orderType = cell.getStringCellValue();
-                case CHANNEL -> this.channel = cell.getStringCellValue();
-                case CITY -> this.city = cell.getStringCellValue();
-                case CREATE_DATE -> this.createDate = TimeUtils.toLocalDate(cell.getDateCellValue());
-                case TARGET_DATE -> this.targetDate = TimeUtils.toLocalDate(cell.getDateCellValue());
-                case ORDER_ID -> this.orderId = cell.toString();
-                case POINT -> this.point = cell.getStringCellValue();
-                case ADDRESS -> this.address = cell.getStringCellValue();
-                case WORK_GROUP -> this.workGroup = cell.getStringCellValue();
-                case VOLUME -> this.volume = (int) cell.getNumericCellValue();
-                case JTI_COMMENT -> this.jtiComment = cell.getStringCellValue();
-                case EXECUTOR_COMMENT -> this.executorComment = cell.getStringCellValue();
-                case INIT_COMMENT -> this.initComment = cell.getStringCellValue();
-                case ORDER_STATUS -> this.orderStatus = cell.getStringCellValue();
-                case ORDER_LINK -> this.orderLink = cell.getStringCellValue();
-                case EQUIPMENT -> this.equipment = cell.getStringCellValue();
+                case ORDER_TYPE:
+                    this.orderType = cell.getStringCellValue();
+                    break;
+                case CHANNEL:
+                    this.channel = cell.getStringCellValue();
+                    break;
+                case CITY:
+                    this.city = cell.getStringCellValue();
+                    break;
+                case CREATE_DATE:
+                    this.createDate = TimeUtils.toLocalDate(cell.getDateCellValue());
+                    break;
+                case TARGET_DATE:
+                    this.targetDate = TimeUtils.toLocalDate(cell.getDateCellValue());
+                    break;
+                case ORDER_ID:
+                    this.orderId = cell.toString();
+                    break;
+                case POINT:
+                    this.point = cell.getStringCellValue();
+                    break;
+                case ADDRESS:
+                    this.address = cell.getStringCellValue();
+                    break;
+                case WORK_GROUP:
+                    this.workGroup = cell.getStringCellValue();
+                    break;
+                case VOLUME:
+                    this.volume = (int) cell.getNumericCellValue();
+                    break;
+                case JTI_COMMENT:
+                    this.jtiComment = cell.getStringCellValue();
+                    break;
+                case EXECUTOR_COMMENT:
+                    this.executorComment = cell.getStringCellValue();
+                    break;
+                case INIT_COMMENT:
+                    this.initComment = cell.getStringCellValue();
+                    break;
+                case ORDER_STATUS:
+                    this.orderStatus = cell.getStringCellValue();
+                    break;
+                case ORDER_LINK:
+                    this.orderLink = cell.getStringCellValue();
+                    break;
+                case EQUIPMENT:
+                    this.equipment = cell.getStringCellValue();
+                    break;
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());

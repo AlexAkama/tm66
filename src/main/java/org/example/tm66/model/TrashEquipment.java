@@ -1,4 +1,15 @@
 package org.example.tm66.model;
 
-public record TrashEquipment(String orderId, String equipment) {
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class TrashEquipment {
+    String orderId;
+    String equipment;
 }

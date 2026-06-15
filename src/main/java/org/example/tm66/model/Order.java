@@ -26,43 +26,43 @@ public class Order {
     private List<FinalizeComment> finalizeComments;
 
     public LocalDate getCreatAt() {
-        return tasks.getFirst().getCreatAt();
+        return tasks.get(0).getCreatAt();
     }
 
     public String getOrderId() {
-        return tasks.getFirst().getOrderId();
+        return tasks.get(0).getOrderId();
     }
 
     public String getUrl() {
-        return tasks.getFirst().getUrl();
+        return tasks.get(0).getUrl();
     }
 
     public String getCity() {
-        return tasks.getFirst().getCity();
+        return tasks.get(0).getCity();
     }
 
     public String getLocation() {
-        return tasks.getFirst().getLocation();
+        return tasks.get(0).getLocation();
     }
 
     public String getAddress() {
-        return tasks.getFirst().getAddress();
+        return tasks.get(0).getAddress();
     }
 
     public String getChanel() {
-        return tasks.getFirst().getChanel();
+        return tasks.get(0).getChanel();
     }
 
     public String getPoint() {
-        return tasks.getFirst().getPoint();
+        return tasks.get(0).getPoint();
     }
 
     public String getComment() {
-        return tasks.getFirst().getComment();
+        return tasks.get(0).getComment();
     }
 
     public LocalDate getTargetDate() {
-        return tasks.getFirst().getTargetDate();
+        return tasks.get(0).getTargetDate();
     }
 
     public String getTargetDateString() {
@@ -81,7 +81,7 @@ public class Order {
     }
 
     public TaskStatus getStatus() {
-        return tasks.getFirst().getStatus();
+        return tasks.get(0).getStatus();
     }
 
     public boolean isCargo() {
@@ -108,7 +108,7 @@ public class Order {
         String text = "ОТЧЕТ" + " "
                 + getOrderId() + " "
                 + getCity().toUpperCase() + " "
-                + getUrlAddress(tasks.getFirst());
+                + getUrlAddress(tasks.get(0));
         text = text.replaceAll("\\s+", "%20");
         return "mailto:" + executorEmail + "?subject=" + text;
     }
