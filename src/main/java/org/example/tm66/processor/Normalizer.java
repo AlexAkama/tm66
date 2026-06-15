@@ -122,6 +122,9 @@ public final class Normalizer {
         address = address.replace(" , ", " ");
         address = address.replaceAll("\\s+", " ");
         address = specialRemove(address, city);
+        while (address.startsWith(city + ",")) {
+            address = address.substring(city.length() + 1).trim();
+        }
         return address.trim();
     }
 

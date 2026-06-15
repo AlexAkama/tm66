@@ -2,6 +2,7 @@ package org.example.tm66.mapper;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.apache.logging.log4j.util.Strings;
 import org.example.tm66.model.RowDto;
 import org.example.tm66.model.Task;
 import org.example.tm66.model.TaskStatus;
@@ -50,7 +51,6 @@ public class TaskMapper {
         Task task = new Task();
         task.setCreatAt(row.getCreateDate());
 
-        normalize(row);
         enrich(row);
         trimTrash(row);
         separateWarehouse(row);
@@ -58,8 +58,19 @@ public class TaskMapper {
         task.setOrderId(row.getOrderId());
         task.setUrl(row.getOrderLink());
 
-        task.setCity(row.getCity());
-        task.setLocation(Locations.getLocation(row.getCity()));
+        String city = row.getCity();
+        String address = row.getAddress();
+        if (Strings.isBlank(city)) {
+            city = extractCity(address);
+            address = address.substring(city.length() + 1).trim();
+        }
+
+        String normalizeCity = Normalizer.normalizeCity(city);
+        task.setCity(normalizeCity);
+        task.setLocation(Locations.getLocation(normalizeCity));
+
+        String normalizeAddress = Normalizer.normalizeAddress(address, task.getCity());
+        task.setAddress(normalizeAddress);
 
         String workGroup = row.getWorkGroup();
         task.setWork(isNotBlank(workGroup) ? workGroup : row.getOrderType());
@@ -75,9 +86,6 @@ public class TaskMapper {
         String equipment = row.getEquipment();
         task.setEquipment(isNotBlank(equipment) ? equipment : "оборудование не указано");
 
-        String address = Normalizer.normalizeAddress(row.getAddress(), task.getCity());
-        task.setAddress(address);
-
         task.setTargetDate(row.getTargetDate());
 
         task.setComment(COMMENT_MAP.getOrDefault(row.getOrderId(), buildAndSaveComment(row)));
@@ -92,9 +100,9 @@ public class TaskMapper {
         return task;
     }
 
-    private static void normalize(RowDto row) {
-        String normalize = Normalizer.normalizeCity(row.getCity());
-        row.setCity(normalize);
+    private static String extractCity(String address) {
+        int index = address.indexOf(",");
+        return address.substring(0, index).trim();
     }
 
     private static void enrich(RowDto row) {

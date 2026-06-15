@@ -2,6 +2,7 @@ package org.example.tm66.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.tm66.config.AppParams;
 import org.example.tm66.util.TimeUtils;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
@@ -18,12 +19,14 @@ import java.nio.file.Paths;
 @RequiredArgsConstructor
 public class HtmlGeneratorService {
 
+    private final AppParams appParams;
     private final OrderService orderService;
     private final SpringTemplateEngine templateEngine;
 
     public void generateGroupsHtml(String path) {
         Path outputPath = Paths.get(path);
         Context context = new Context();
+        context.setVariable("version", appParams.getVersion());
         context.setVariable("groups", orderService.getGroups());
         context.setVariable("nowEnd", orderService.getNowEndOrderId());
         context.setVariable("returned", orderService.getReturnedOrderId());

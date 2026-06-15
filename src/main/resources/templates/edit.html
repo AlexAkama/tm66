@@ -2,10 +2,32 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Редактирование</title>
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            height: 100%;
+            max-width: 600px;
+            margin: auto;
+            padding: 5px;
+        }
+
+        .menu {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            font-size: 32px;
+        }
+
         .message {
-            min-width: 1.2em;
+            min-width: 24px;
         }
 
         .tabs {
@@ -17,6 +39,8 @@
             margin: 1px 3px;
             background-color: lightgray;
             cursor: pointer;
+            min-width: 210px;
+            text-align: center;
         }
 
         .tab-button.active {
@@ -32,9 +56,19 @@
             display: block;
         }
 
+        textarea {
+            width: 100%;
+        }
+
         .order-link-container {
             display: none;
             margin-left: 10px;
+        }
+
+        .version {
+            position: absolute;
+            bottom: -2em;
+            left: 30%;
         }
 
     </style>
@@ -48,77 +82,82 @@
 </head>
 <body>
 
-<div>
-    <p th:if="${#authentication != null}">Вы вошли как: <span th:text="${#authentication.name}"></span></p>
-</div>
+<div class="container">
 
-<div>
-    <a class="tab-button" href="/groups?admin=true">АДМИН</a>
-    <a class="tab-button" href="/groups">ПРОСМОТР</a>
-    <a class="tab-button" href="/api/upload/ftp?user=KGS">ВЫГРУЗИТЬ</a>
-    <a class="tab-button" href="/api/upload/static?user=KGS">СОХРАНИТЬ</a>
-</div>
-
-<div th:if="${trash != null && trash.size() > 0}">
-    <h2>Загрузить расшифровку утилизации</h2>
-    <div class="tabs">
-        <span class="tab-button active" data-tab="tab-text">Text</span>
-        <span class="tab-button" data-tab="tab-file">File</span>
+    <div class="menu">
+        <a class="tab-button" href="/groups?admin=true">АДМИН</a>
+        <a class="tab-button" href="/groups">ПРОСМОТР</a>
+        <a class="tab-button" href="/api/export/ftp?user=KGS">ВЫГРУЗИТЬ</a>
+        <a class="tab-button" href="/api/export/static?user=KGS">СОХРАНИТЬ</a>
     </div>
-    <div class="tab-content">
-        <div class="tab-pane active" id="tab-text">
-            <form id="uploadTrashForm" method="post" action="/api/upload/trash"
-                  enctype="application/x-www-form-urlencoded">
-                <label for="select-trash-orderId">ID заказа:</label>
-                <select id="select-trash-orderId" name="orderId" required>
-                    <option value="" disabled selected>Выберите ID заказа</option>
-                    <option th:each="orderId : ${trash.keySet()}" th:value="${orderId}"
-                            th:text="${orderId}"></option>
-                </select>
-                <div class="order-link-container" id="trash-order-link-container">
-                    <a id="trash-order-link" href="#" target="_blank"></a>
-                </div>
-                <br><br>
 
-                <label for="trash-equipment">Оборудование:</label><br>
-                <textarea id="trash-equipment" name="equipment" rows="4" cols="50" required></textarea><br><br>
-
-                <button type="submit">Отправить</button>
-            </form>
-            <div class="message" id="uploadTrashForm-message"></div>
+    <div th:if="${trash != null && trash.size() > 0}">
+        <hr>
+        <h2>Загрузить расшифровку утилизации</h2>
+        <div class="tabs">
+            <span class="tab-button active" data-tab="tab-text">Text</span>
+            <span class="tab-button" data-tab="tab-file">File</span>
         </div>
-        <div class="tab-pane" id="tab-file">
-            <form id="uploadTrashFileForm" method="post" action="/api/upload/trash/file" enctype="multipart/form-data">
-                <input type="file" name="file" accept=".txt" required/>
-                <button type="submit">Загрузить</button>
-            </form>
-            <div class="message" id="uploadTrashFileForm-message"></div>
+        <div class="tab-content">
+            <div class="tab-pane active" id="tab-text">
+                <form id="uploadTrashForm" method="post" action="/api/upload/trash"
+                      enctype="application/x-www-form-urlencoded">
+                    <label for="select-trash-orderId">ID заказа:</label>
+                    <select id="select-trash-orderId" name="orderId" required>
+                        <option value="" disabled selected>Выберите ID заказа</option>
+                        <option th:each="orderId : ${trash.keySet()}" th:value="${orderId}"
+                                th:text="${orderId}"></option>
+                    </select>
+                    <div class="order-link-container" id="trash-order-link-container">
+                        <a id="trash-order-link" href="#" target="_blank"></a>
+                    </div>
+                    <br><br>
+
+                    <label for="trash-equipment">Оборудование:</label><br>
+                    <textarea id="trash-equipment" name="equipment" rows="4" required></textarea><br><br>
+
+                    <button type="submit">Отправить</button>
+                </form>
+                <div class="message" id="uploadTrashForm-message"></div>
+            </div>
+            <div class="tab-pane" id="tab-file">
+                <form id="uploadTrashFileForm" method="post" action="/api/upload/trash/file"
+                      enctype="multipart/form-data">
+                    <input type="file" name="file" accept=".txt" required/>
+                    <button type="submit">Загрузить</button>
+                </form>
+                <div class="message" id="uploadTrashFileForm-message"></div>
+            </div>
         </div>
     </div>
-</div>
 
-<div th:if="${returned != null && returned.size() > 0}">
-    <h2>Добавить коммент</h2>
-    <form id="addComment" method="post" action="/api/upload/comment" enctype="application/x-www-form-urlencoded">
-        <label for="select-returned-orderId">ID заказа:</label>
-        <select id="select-returned-orderId" name="orderId" required>
-            <option value="" disabled selected>Выберите ID заказа</option>
-            <option th:each="orderId : ${returned.keySet()}" th:value="${orderId}" th:text="${orderId}"></option>
-        </select>
-        <div class="order-link-container" id="returned-order-link-container">
-            <a id="returned-order-link" href="#" target="_blank"></a>
-        </div>
-        <br><br>
+    <div th:if="${returned != null && returned.size() > 0}">
+        <hr>
+        <h2>Добавить коммент</h2>
+        <form id="addComment" method="post" action="/api/upload/comment" enctype="application/x-www-form-urlencoded">
+            <label for="select-returned-orderId">ID заказа:</label>
+            <select id="select-returned-orderId" name="orderId" required>
+                <option value="" disabled selected>Выберите ID заказа</option>
+                <option th:each="orderId : ${returned.keySet()}" th:value="${orderId}" th:text="${orderId}"></option>
+            </select>
+            <div class="order-link-container" id="returned-order-link-container">
+                <a id="returned-order-link" href="#" target="_blank"></a>
+            </div>
+            <br><br>
 
-        <label for="comment-date">Дата:</label>
-        <input type="date" id="comment-date" name="date" required><br><br>
+            <label for="comment-date">Дата:</label>
+            <input type="date" id="comment-date" name="date" required><br><br>
 
-        <label for="comment-content">Комментарий:</label><br>
-        <textarea id="comment-content" name="comment" rows="4" cols="50" required></textarea><br><br>
+            <label for="comment-content">Комментарий:</label><br>
+            <textarea id="comment-content" name="comment" rows="4" required></textarea><br><br>
 
-        <button type="submit">Отправить</button>
-    </form>
-    <div class="message" id="addComment-message"></div>
+            <button type="submit">Отправить</button>
+        </form>
+        <div class="message" id="addComment-message"></div>
+    </div>
+
+    <div class="version" th:text="${version}"></div>
+
 </div>
 
 <script>

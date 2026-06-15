@@ -1,16 +1,39 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="ru">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Главная</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            height: 100%;
+            max-width: 600px;
+            margin: auto;
+            padding: 5px;
+            font-size: 32px;
+        }
+
+    </style>
 </head>
 <body>
-<div th:if="${user != null}">
-    <p>Вы вошли как: <span th:text="${user.username}"></span></p>
-    <p><a th:href="@{/upload}">Дальше...</a></p>
-    <a th:href="@{/logout}">Выйти</a>
+
+<div class="container">
+    <div th:if="${user != null}">
+        <p>Вы вошли как: <span th:text="${user.getUsername()}"></span></p>
+        <p><a th:href="@{/upload}">Дальше...</a></p>
+        <a th:href="@{/logout}">Выйти</a>
+    </div>
+    <div th:unless="${user != null}">
+        Пожалуйста, <a th:href="@{/login}">войдите</a> в систему.
+    </div>
 </div>
-<div th:unless="${user != null}">
-    Пожалуйста, <a th:href="@{/login}">войдите</a> в систему.
-</div>
+
 </body>
 </html>

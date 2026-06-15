@@ -20,9 +20,10 @@ public class IntegrationService {
     private final FtpService ftpService;
     private final List<UserParams> userParamsList;
 
-    public void uploadToFtp(@NotNull String user) throws IOException {
+    public UserParams uploadToFtp(@NotNull String user) throws IOException {
         UserParams params = getUserParams(user);
         generateHtmlAndSendToFtp(params);
+        return params;
     }
 
     public void save(@NotNull String user) {
