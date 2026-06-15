@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -14,6 +15,7 @@ public final class Normalizer {
 
     private static final Set<String> ADDRESS_REPLACE_TO_SPACE;
     private static final Set<String> ADDRESS_REMOVE;
+    private static final String ADDRESS_REMOVE_REGEX;
     private static final Map<String, String> ADDRESS_REPLACE;
 
     private static final Map<String, List<String>> ADDRESS_SPECIAL_REMOVE;
@@ -93,6 +95,15 @@ public final class Normalizer {
         ADDRESS_REMOVE.add("пр-кт");
         ADDRESS_REMOVE.add("пр-т");
 
+        // Объединяем все элементы множества в одну строку, разделенную '|'
+        // \\Q и \\E нужны для безопасного экранирования любых спецсимволов в ключах
+        String pattern = ADDRESS_REMOVE.stream()
+                .map(key -> "\\Q" + key + "\\E")
+                .collect(Collectors.joining("|"));
+        // Добавляем границы слова (\b) к началу и концу паттерна
+        // Флаг (?i) делает поиск нечувствительным к регистру
+        ADDRESS_REMOVE_REGEX = "(?i)\\b(" + pattern + ")\\b";
+
         ADDRESS_SPECIAL_REMOVE = new HashMap<>();
         ADDRESS_SPECIAL_REMOVE.put("Сосьва", Collections.singletonList("Серовский Р-н, "));
 
@@ -116,11 +127,9 @@ public final class Normalizer {
         for (String s : ADDRESS_REPLACE_TO_SPACE) {
             address = address.replace(s, " ");
         }
-        for (String s : ADDRESS_REMOVE) {
-            address = address.replace(s, "");
-        }
+        address = address.replaceAll(ADDRESS_REMOVE_REGEX, "");
         address = address.replace(" , ", " ");
-        address = address.replaceAll("\\s+", " ");
+        address = address.replaceAll("\\s{2,}", " ");
         address = specialRemove(address, city);
         while (address.startsWith(city + ",")) {
             address = address.substring(city.length() + 1).trim();
