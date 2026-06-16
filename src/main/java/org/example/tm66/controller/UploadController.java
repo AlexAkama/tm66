@@ -67,7 +67,7 @@ public class UploadController {
     }
 
     @PostMapping("/trash")
-    public ResponseEntity<?> uploadTrashContent(@ModelAttribute TrashEquipment equipment) {
+    public ResponseEntity<?> uploadTrashContent(@RequestBody TrashEquipment equipment) {
         try {
             List<String> data = new ArrayList<>();
             data.add(equipment.getOrderId());
@@ -82,7 +82,7 @@ public class UploadController {
     }
 
     @PostMapping("/comment")
-    public ResponseEntity<?> uploadComment(@ModelAttribute FinalizeComment comment) {
+    public ResponseEntity<?> uploadComment(@RequestBody FinalizeComment comment) {
         try {
             finalizeCommentService.add(comment);
             return ResponseEntity.ok("Комментарий успешно добавлен");
