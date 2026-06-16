@@ -2,6 +2,7 @@ package org.example.tm66.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.example.tm66.config.AppParams;
+import org.example.tm66.service.FinalizeCommentService;
 import org.example.tm66.service.OrderService;
 import org.example.tm66.util.TimeUtils;
 import org.springframework.security.core.Authentication;
@@ -12,12 +13,15 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.io.IOException;
+
 @Controller
 @RequiredArgsConstructor
 public class UIController {
 
-    private final OrderService orderService;
     private final AppParams appParams;
+    private final OrderService orderService;
+    private final FinalizeCommentService finalizeCommentService;
 
     @GetMapping("/")
     public String home(Model model) {
@@ -52,10 +56,11 @@ public class UIController {
     }
 
     @GetMapping("/edit")
-    public String showEditForm(Model model) {
+    public String showEditForm(Model model) throws IOException {
         model.addAttribute("version", appParams.getVersion());
-        model.addAttribute("trash", orderService.getTrashLinkMap());
-        model.addAttribute("returned", orderService.getReturnedLinkMap());
+        model.addAttribute("trashMap", orderService.getTrashLinkMap());
+        model.addAttribute("returnedMap", orderService.getReturnedLinkMap());
+        model.addAttribute("commentMap", finalizeCommentService.getMapByOrderId());
         return "edit";
     }
 

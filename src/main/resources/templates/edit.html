@@ -60,23 +60,29 @@
             width: 100%;
         }
 
-        .order-link-container {
+        .order-link-container,
+        .order-comment-container {
             display: none;
             margin-left: 10px;
         }
 
+        .order-comment-container {
+            margin-top: 5px;
+        }
+
         .version {
-            position: absolute;
-            bottom: -2em;
-            left: 30%;
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
         }
 
     </style>
     <script th:inline="javascript">
         /*<![CDATA[*/
         // Убраны лишние фигурные скобки {}
-        const returnedUrlMap = /*[[${returned}]]*/ {};
-        const trashUrlMap = /*[[${trash}]]*/ {};
+        const returnedUrlMap = /*[[${returnedMap}]]*/ {};
+        const trashUrlMap = /*[[${trashMap}]]*/ {};
+        const commentMap = /*[[${commentMap}]]*/ {};
         /*]]>*/
     </script>
 </head>
@@ -91,7 +97,7 @@
         <a class="tab-button" href="/api/export/static?user=KGS">СОХРАНИТЬ</a>
     </div>
 
-    <div th:if="${trash != null && trash.size() > 0}">
+    <div th:if="${trashMap != null && trashMap.size() > 0}">
         <hr>
         <h2>Загрузить расшифровку утилизации</h2>
         <div class="tabs">
@@ -105,12 +111,13 @@
                     <label for="select-trash-orderId">ID заказа:</label>
                     <select id="select-trash-orderId" name="orderId" required>
                         <option value="" disabled selected>Выберите ID заказа</option>
-                        <option th:each="orderId : ${trash.keySet()}" th:value="${orderId}"
-                                th:text="${orderId}"></option>
+                        <option th:each="orderId : ${trashMap.keySet()}"
+                                th:value="${orderId}" th:text="${orderId}"></option>
                     </select>
                     <div class="order-link-container" id="trash-order-link-container">
                         <a id="trash-order-link" href="#" target="_blank"></a>
                     </div>
+                    <div class="order-comment-container" id="trash-order-comment-container"></div>
                     <br><br>
 
                     <label for="trash-equipment">Оборудование:</label><br>
@@ -131,18 +138,20 @@
         </div>
     </div>
 
-    <div th:if="${returned != null && returned.size() > 0}">
+    <div th:if="${returnedMap != null && returnedMap.size() > 0}">
         <hr>
         <h2>Добавить коммент</h2>
         <form id="addComment" method="post" action="/api/upload/comment" enctype="application/x-www-form-urlencoded">
             <label for="select-returned-orderId">ID заказа:</label>
             <select id="select-returned-orderId" name="orderId" required>
                 <option value="" disabled selected>Выберите ID заказа</option>
-                <option th:each="orderId : ${returned.keySet()}" th:value="${orderId}" th:text="${orderId}"></option>
+                <option th:each="orderId : ${returnedMap.keySet()}"
+                        th:value="${orderId}" th:text="${orderId}"></option>
             </select>
             <div class="order-link-container" id="returned-order-link-container">
                 <a id="returned-order-link" href="#" target="_blank"></a>
             </div>
+            <div class="order-comment-container" id="returned-order-comment-container"></div>
             <br><br>
 
             <label for="comment-date">Дата:</label>
@@ -225,12 +234,13 @@
         });
 
 
-    function setupOrderLink(selectId, containerId, linkId, urlMap) {
+    function setupOrderInfo(selectId, containerId, linkId, urlMap, extendContainerId, extendMap, extendRenderFn) {
         const selectElement = document.getElementById(selectId);
         if (!selectElement) return;
 
         const linkContainer = document.getElementById(containerId);
         const linkElement = document.getElementById(linkId);
+        const extendContainer = document.getElementById(extendContainerId);
 
         selectElement.addEventListener('change', function () {
             const selectedOrderId = selectElement.value;
@@ -239,14 +249,41 @@
                 linkElement.href = urlMap[selectedOrderId];
                 linkElement.textContent = 'Перейти к заявке ' + selectedOrderId;
                 linkContainer.style.display = 'inline';
+
+                const extendElements = extendMap[selectedOrderId];
+                extendRenderFn(extendContainer, extendElements)
+
             } else {
                 linkContainer.style.display = 'none';
+                extendContainer.style.display = 'none';
             }
         });
     }
 
-    setupOrderLink('select-trash-orderId', 'trash-order-link-container', 'trash-order-link', trashUrlMap);
-    setupOrderLink('select-returned-orderId', 'returned-order-link-container', 'returned-order-link', returnedUrlMap);
+    function renderTrashOrders(container, trashOrders) {
+        if (Array.isArray(trashOrders) && trashOrders.length > 0) {
+            container.innerHTML = 'TODO';
+            container.style.display = 'block';
+        }
+    }
+
+    function renderComments(container, comments) {
+        if (Array.isArray(comments) && comments.length > 0) {
+            container.innerHTML = '';
+            comments.forEach(function(commentObject) {
+                const commentDate = document.createElement('div');
+                commentDate.textContent = commentObject.shortDate;
+                container.appendChild(commentDate)
+                const commentText = document.createElement('div');
+                commentText.textContent = commentObject.comment;
+                container.appendChild(commentText);
+            });
+            container.style.display = 'block';
+        }
+    }
+
+    setupOrderInfo('select-trash-orderId', 'trash-order-link-container', 'trash-order-link', trashUrlMap, 'trash-order-comment-container', commentMap, renderTrashOrders);
+    setupOrderInfo('select-returned-orderId', 'returned-order-link-container', 'returned-order-link', returnedUrlMap, 'returned-order-comment-container', commentMap, renderComments);
 
 </script>
 

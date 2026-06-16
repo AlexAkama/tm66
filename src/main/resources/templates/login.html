@@ -29,9 +29,9 @@
         }
 
         .version {
-            position: absolute;
-            bottom: -2em;
-            left: 30%;
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
         }
 
     </style>
@@ -51,7 +51,7 @@
         <br/>
         <button type="submit">Войти</button>
     </form>
-    <div class="version" th:text="${version}">111</div>
+    <div class="version" th:text="${version}"></div>
 </div>
 
 </body>

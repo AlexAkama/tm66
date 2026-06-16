@@ -51,13 +51,15 @@
             font-weight: bold;
             font-size: 1.2em;
             margin-top: 20px;
+            margin-bottom: 3px;
             padding: 3px;
             cursor: pointer;
         }
 
         .order {
             position: relative;
-            border: 1px solid lightgray;
+            border: 2px solid lightgray;
+            margin-bottom: 3px;
         }
 
         .order-info {
@@ -92,16 +94,33 @@
             background-color: antiquewhite;
         }
 
-        .ready {
+        .ready .order-header,
+        .ready .create-at {
             opacity: .3;
         }
 
-        .in-progress {
+        .in-progress,
+        .in-progress .create-at {
+            border-color: green;
+        }
+
+        .in-progress .order-header,
+        .in-progress .create-at {
             background-color: lightgreen;
         }
 
-        .returned > .order-header {
+        .returned,
+        .returned .create-at {
+            border-color: red;
+        }
+
+        .returned .order-header {
             color: red;
+        }
+
+        .returned .order-header,
+        .returned .create-at {
+            background-color: pink;
         }
 
         .order-id,
@@ -176,7 +195,8 @@
             padding: 10px 0 5px;
         }
 
-        .comment {
+        .comment,
+        .finalize-comments {
             font-family: "Tahoma", Geneva, sans-serif;
         }
 
@@ -193,6 +213,7 @@
 
         .finalize-comment-data {
             vertical-align: top;
+            padding-right: 7px;
         }
 
         .blue-mark {
@@ -356,11 +377,12 @@
     <div class="order"
          th:each="order : ${group.orders}"
          th:id="'order-'+${order.getOrderId()}"
-         th:classappend="${order.getStatus().name() == 'RETURNED' ? 'returned' : ''}">
+         th:classappend="${order.getStatus().name() == 'RETURNED' ? 'returned' :
+                            (order.getStatus().name() == 'READY' ? 'ready' :
+                            (order.getStatus().name() == 'IN_PROGRESS' ? 'in-progress' : ''))}"
+    >
 
-        <div class="order-header"
-             th:classappend="${order.getStatus().name() == 'READY' ? 'ready' : (order.getStatus().name() == 'IN_PROGRESS' ? 'in-progress' : '')}"
-        >
+        <div class="order-header">
                 <span class="order-id blue-mark" th:attr="id=${order.getOrderId()}">
                     <a target="_blank"
                        th:text="${order.getOrderId()}"
@@ -404,6 +426,8 @@
             <div class="comment" th:if="${order.getComment() != null}">
                 <div class="comment-header">КОММЕНТАРИЙ:</div>
                 <div class="comment-content" th:utext="${order.getComment()}"></div>
+            </div>
+            <div>
                 <table class="finalize-comments" th:if="${order.getFinalizeComments() != null}">
                     <tr th:each="comment : ${order.getFinalizeComments()}">
                         <td class="finalize-comment-data" th:text="${comment.getShortDate()}"></td>
