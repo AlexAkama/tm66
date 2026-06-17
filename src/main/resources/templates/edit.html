@@ -82,6 +82,7 @@
         // Убраны лишние фигурные скобки {}
         const returnedUrlMap = /*[[${returnedMap}]]*/ {};
         const trashUrlMap = /*[[${trashMap}]]*/ {};
+        const trashDecodeMap = /*[[${trashDecodeMap}]]*/ {};
         const commentMap = /*[[${commentMap}]]*/ {};
         /*]]>*/
     </script>
@@ -260,9 +261,41 @@
         });
     }
 
-    function renderTrashOrders(container, trashOrders) {
-        if (Array.isArray(trashOrders) && trashOrders.length > 0) {
-            container.innerHTML = 'TODO';
+    function renderTrashOrders(container, trashTasks) {
+        if (Array.isArray(trashTasks) && trashTasks.length > 0) {
+
+            const table = document.createElement('table');
+
+            const thead = document.createElement('thead');
+            const headerRow = document.createElement('tr');
+            const headers = ['Работа', 'Объём']; // Названия колонок
+            headers.forEach(text => {
+                const th = document.createElement('th');
+                th.textContent = text;
+                headerRow.appendChild(th);
+            });
+            thead.appendChild(headerRow);
+            table.appendChild(thead);
+
+            const tbody = document.createElement('tbody');
+            trashTasks.forEach(task => {
+                const row = document.createElement('tr');
+
+                const workCell = document.createElement('td');
+                workCell.innerHTML = task.work;
+                row.appendChild(workCell);
+
+                const volumeCell = document.createElement('td');
+                volumeCell.textContent = task.volume;
+                volumeCell.style.textAlign='center';
+                row.appendChild(volumeCell);
+
+                tbody.appendChild(row);
+            });
+            table.appendChild(tbody);
+
+            container.appendChild(table);
+
             container.style.display = 'block';
         }
     }
@@ -282,7 +315,7 @@
         }
     }
 
-    setupOrderInfo('select-trash-orderId', 'trash-order-link-container', 'trash-order-link', trashUrlMap, 'trash-order-comment-container', commentMap, renderTrashOrders);
+    setupOrderInfo('select-trash-orderId', 'trash-order-link-container', 'trash-order-link', trashUrlMap, 'trash-order-comment-container', trashDecodeMap, renderTrashOrders);
     setupOrderInfo('select-returned-orderId', 'returned-order-link-container', 'returned-order-link', returnedUrlMap, 'returned-order-comment-container', commentMap, renderComments);
 
 </script>

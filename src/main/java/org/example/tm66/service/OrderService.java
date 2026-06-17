@@ -57,13 +57,12 @@ public class OrderService {
                 .sorted(Comparator.comparing(Order::getTargetDate))
                 .collect(Collectors.toList());
 
-        Map<String, TrashOrder> trashMap = trashOrderService.getMapByOrderId();
+        Map<String, List<TrashTask>> trashMap = trashOrderService.getMapByOrderId();
         Map<String, List<FinalizeComment>> commentMap = finalizeCommentService.getMapByOrderId();
         for (Order order : orders) {
             String orderId = order.getOrderId();
             if (trashMap.containsKey(orderId)) {
-                TrashOrder trashOrder = trashMap.get(orderId);
-                order.setTrashTasks(trashOrder.getTasks());
+                order.setTrashTasks(trashMap.get(orderId));
             }
             if (commentMap.containsKey(orderId)) {
                 List<FinalizeComment> comments = commentMap.get(orderId);

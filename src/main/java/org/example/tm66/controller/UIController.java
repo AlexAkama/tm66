@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.tm66.config.AppParams;
 import org.example.tm66.service.FinalizeCommentService;
 import org.example.tm66.service.OrderService;
+import org.example.tm66.service.TrashOrderService;
 import org.example.tm66.util.TimeUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,6 +22,7 @@ public class UIController {
 
     private final AppParams appParams;
     private final OrderService orderService;
+    private final TrashOrderService trashOrderService;
     private final FinalizeCommentService finalizeCommentService;
 
     @GetMapping("/")
@@ -60,6 +62,7 @@ public class UIController {
         model.addAttribute("version", appParams.getVersion());
         model.addAttribute("trashMap", orderService.getTrashLinkMap());
         model.addAttribute("returnedMap", orderService.getReturnedLinkMap());
+        model.addAttribute("trashDecodeMap", trashOrderService.getMapByOrderId());
         model.addAttribute("commentMap", finalizeCommentService.getMapByOrderId());
         return "edit";
     }

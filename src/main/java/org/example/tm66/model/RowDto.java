@@ -84,7 +84,7 @@ public class RowDto {
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            System.out.println(field + " " + cell);
+            System.out.println(field.getText() + ": '" + cell + "'");
         }
     }
 

@@ -59,9 +59,9 @@ public class TrashOrderService {
         saveOrdersToFile(orders);
     }
 
-    public Map<String, TrashOrder> getMapByOrderId() throws IOException {
+    public Map<String, List<TrashTask>> getMapByOrderId() throws IOException {
         return readOrdersFromFile().stream()
-                .collect(Collectors.toMap(TrashOrder::getOrderId, Function.identity()));
+                .collect(Collectors.toMap(TrashOrder::getOrderId, TrashOrder::getTasks));
     }
 
     private List<TrashOrder> readOrdersFromFile() throws IOException {
