@@ -7,7 +7,13 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.example.tm66.config.KgsUserParams;
 import org.example.tm66.mapper.TaskMapper;
-import org.example.tm66.model.*;
+import org.example.tm66.model.FinalizeComment;
+import org.example.tm66.model.Group;
+import org.example.tm66.model.Order;
+import org.example.tm66.model.RowDto;
+import org.example.tm66.model.Task;
+import org.example.tm66.model.TaskStatus;
+import org.example.tm66.model.TrashTask;
 import org.example.tm66.processor.ParseProcessor;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +22,10 @@ import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
+
+import static org.example.tm66.model.TaskStatus.RETURNED;
 
 @Getter
 @Setter
@@ -95,7 +104,7 @@ public class OrderService {
         if (groups == null) return null;
         return groups.stream()
                 .flatMap(group -> group.getOrders().stream())
-                .filter(order -> order.getStatus() == TaskStatus.RETURNED)
+                .filter(order -> order.getStatus() == RETURNED)
                 .map(Order::getOrderId)
                 .collect(Collectors.toList());
     }
@@ -104,7 +113,7 @@ public class OrderService {
         if (groups == null) return null;
         return groups.stream()
                 .flatMap(group -> group.getOrders().stream())
-                .filter(order -> order.getStatus() == TaskStatus.RETURNED)
+                .filter(order -> order.getStatus() == RETURNED)
                 .collect(Collectors.toMap(Order::getOrderId, Order::getUrl));
     }
 
@@ -114,6 +123,24 @@ public class OrderService {
                 .flatMap(group -> group.getOrders().stream())
                 .filter(Order::isTrash)
                 .collect(Collectors.toMap(Order::getOrderId, Order::getUrl));
+    }
+
+    public void clearTrash() throws IOException {
+        Set<String> usedIds = groups.stream()
+                .flatMap(group -> group.getOrders().stream())
+                .filter(Order::isTrash)
+                .map(Order::getOrderId)
+                .collect(Collectors.toSet());
+        trashOrderService.clear(usedIds);
+    }
+
+    public void clearComment() throws IOException {
+        Set<String> usedIds = groups.stream()
+                .flatMap(group -> group.getOrders().stream())
+                .filter(order -> RETURNED == order.getStatus())
+                .map(Order::getOrderId)
+                .collect(Collectors.toSet());
+        finalizeCommentService.clear(usedIds);
     }
 
 }

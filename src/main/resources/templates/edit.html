@@ -166,6 +166,23 @@
         <div class="message" id="addComment-message"></div>
     </div>
 
+    <div class="clear" id="trash-clear"
+         th:if="${(trashMap == null || trashMap.size() == 0) && (trashDecodeMap != null && trashDecodeMap.size() > 0)}">
+        <hr>
+        <h2>Очистка расшифровок утилизаций</h2>
+        <form id="clearTrash" method="post" action="/api/clear/trash" enctype="application/x-www-form-urlencoded">
+            <button type="submit">Очистить</button>
+        </form>
+    </div>
+    <div class="clear" id="comment-clear"
+         th:if="${(returnedMap == null || returnedMap.size() == 0) && (commentMap != null && commentMap.size() > 0)}">
+        <hr>
+        <h2>Очистка комментариев</h2>
+        <form id="clearComment" method="post" action="/api/clear/comment" enctype="application/x-www-form-urlencoded">
+            <button type="submit">Очистить</button>
+        </form>
+    </div>
+
     <div class="version" th:text="${version}"></div>
 
 </div>
@@ -215,6 +232,8 @@
     handleFormSubmit('uploadTrashForm', '/edit');
     handleFormSubmit('uploadTrashFileForm', '/edit');
     handleFormSubmit('addComment', '/edit');
+    handleFormSubmit('clearTrash', '/edit');
+    handleFormSubmit('clearComment', '/edit');
 
     document.querySelectorAll('.tab-button')
         .forEach(button => {
@@ -287,7 +306,7 @@
 
                 const volumeCell = document.createElement('td');
                 volumeCell.textContent = task.volume;
-                volumeCell.style.textAlign='center';
+                volumeCell.style.textAlign = 'center';
                 row.appendChild(volumeCell);
 
                 tbody.appendChild(row);
@@ -303,7 +322,7 @@
     function renderComments(container, comments) {
         if (Array.isArray(comments) && comments.length > 0) {
             container.innerHTML = '';
-            comments.forEach(function(commentObject) {
+            comments.forEach(function (commentObject) {
                 const commentDate = document.createElement('div');
                 commentDate.textContent = commentObject.shortDate;
                 container.appendChild(commentDate)

@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -62,6 +62,19 @@ public class TrashOrderService {
     public Map<String, List<TrashTask>> getMapByOrderId() throws IOException {
         return readOrdersFromFile().stream()
                 .collect(Collectors.toMap(TrashOrder::getOrderId, TrashOrder::getTasks));
+    }
+
+    /**
+     * Очистка не используемых расшифровок утилизаций.
+     *
+     * @param usedIds список используемых id
+     */
+    public void clear(Set<String> usedIds) throws IOException {
+        List<TrashOrder> orders = readOrdersFromFile();
+        List<TrashOrder> filtered = orders.stream()
+                .filter(order -> usedIds.contains(order.getOrderId()))
+                .collect(Collectors.toList());
+        saveOrdersToFile(filtered);
     }
 
     private List<TrashOrder> readOrdersFromFile() throws IOException {

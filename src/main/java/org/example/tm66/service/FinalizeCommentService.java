@@ -13,6 +13,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -37,6 +38,17 @@ public class FinalizeCommentService {
                 .collect(Collectors.groupingBy(FinalizeComment::getOrderId));
     }
 
+    /**
+     * Очистка не используемых комментариев.
+     */
+    public void clear(Set<String> usedIds) throws IOException {
+        List<FinalizeComment> comments = readCommentsFromFile();
+        List<FinalizeComment> filtered = comments.stream()
+                .filter(comment -> usedIds.contains(comment.getOrderId()))
+                .collect(Collectors.toList());
+        saveCommentsToFile(filtered);
+    }
+
     private List<FinalizeComment> readCommentsFromFile() throws IOException {
         if (Files.exists(filePath)) {
             return objectMapper.readValue(filePath.toFile(), new TypeReference<List<FinalizeComment>>() {
@@ -47,7 +59,7 @@ public class FinalizeCommentService {
     }
 
     private void saveCommentsToFile(List<FinalizeComment> comments) throws IOException {
-            objectMapper.writerWithDefaultPrettyPrinter().writeValue(filePath.toFile(), comments);
+        objectMapper.writerWithDefaultPrettyPrinter().writeValue(filePath.toFile(), comments);
     }
 
 }
