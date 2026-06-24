@@ -27,10 +27,11 @@ public class FinalizeCommentService {
         filePath = Paths.get(uploadConfig.getCommentDir() + "/finalize_comments.json");
     }
 
-    public void add(FinalizeComment comment) throws IOException {
+    public String add(FinalizeComment comment) throws IOException {
         List<FinalizeComment> comments = readCommentsFromFile();
         comments.add(comment);
         saveCommentsToFile(comments);
+        return comment.getOrderId();
     }
 
     public Map<String, List<FinalizeComment>> getMapByOrderId() throws IOException {

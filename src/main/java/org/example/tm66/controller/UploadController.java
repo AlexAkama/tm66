@@ -6,9 +6,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.example.tm66.model.FinalizeComment;
 import org.example.tm66.model.TrashEquipment;
-import org.example.tm66.service.FinalizeCommentService;
 import org.example.tm66.service.OrderService;
-import org.example.tm66.service.TrashOrderService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -33,8 +31,6 @@ import java.util.stream.Collectors;
 public class UploadController {
 
     private final OrderService orderService;
-    private final TrashOrderService trashOrderService;
-    private final FinalizeCommentService finalizeCommentService;
 
     @PostMapping("tasks")
     public ResponseEntity<?> uploadXlsx(@RequestParam("file") MultipartFile file) {
@@ -61,7 +57,7 @@ public class UploadController {
                 new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8))) {
 
             List<String> lines = reader.lines().collect(Collectors.toList());
-            trashOrderService.update(lines);
+            orderService.addTrash(lines);
 
             return ResponseEntity.ok("Файл успешно обработан");
         } catch (Exception e) {
@@ -77,7 +73,7 @@ public class UploadController {
             data.add(equipment.getOrderId());
             String[] split = equipment.getEquipment().split("\n");
             data.addAll(Arrays.stream(split).collect(Collectors.toList()));
-            trashOrderService.update(data);
+            orderService.addTrash(data);
             return ResponseEntity.ok("Оборудование для утилизации успешно добавлен");
         } catch (Exception e) {
             log.error("Ошибка при добавлении оборудования для утилизации:", e);
@@ -88,7 +84,7 @@ public class UploadController {
     @PostMapping("/comment")
     public ResponseEntity<?> uploadComment(@RequestBody FinalizeComment comment) {
         try {
-            finalizeCommentService.add(comment);
+            orderService.addComment(comment);
             return ResponseEntity.ok("Комментарий успешно добавлен");
         } catch (Exception e) {
             log.error("Ошибка при добавлении комментария:", e);

@@ -29,9 +29,9 @@ public class TrashOrderService {
         this.filePath = Paths.get(uploadConfig.getCommentDir() + "/trash_orders.json");
     }
 
-    public void update(List<String> lines) throws IOException {
+    public String update(List<String> lines) throws IOException {
         TrashOrder order = map(lines);
-        updateOrAddOrder(order);
+        return updateOrAddOrder(order);
     }
 
     private TrashOrder map(List<String> lines) {
@@ -48,7 +48,7 @@ public class TrashOrderService {
         return new TrashOrder(orderId, tasks);
     }
 
-    private void updateOrAddOrder(TrashOrder order) throws IOException {
+    private String updateOrAddOrder(TrashOrder order) throws IOException {
         List<TrashOrder> orders = readOrdersFromFile();
         Optional<Integer> index = findOrderIndexById(orders, order.getOrderId());
         if (index.isPresent()) {
@@ -57,6 +57,7 @@ public class TrashOrderService {
             orders.add(order);
         }
         saveOrdersToFile(orders);
+        return order.getOrderId();
     }
 
     public Map<String, List<TrashTask>> getMapByOrderId() throws IOException {

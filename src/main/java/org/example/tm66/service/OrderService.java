@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -66,18 +67,8 @@ public class OrderService {
                 .sorted(Comparator.comparing(Order::getTargetDate))
                 .collect(Collectors.toList());
 
-        Map<String, List<TrashTask>> trashMap = trashOrderService.getMapByOrderId();
-        Map<String, List<FinalizeComment>> commentMap = finalizeCommentService.getMapByOrderId();
-        for (Order order : orders) {
-            String orderId = order.getOrderId();
-            if (trashMap.containsKey(orderId)) {
-                order.setTrashTasks(trashMap.get(orderId));
-            }
-            if (commentMap.containsKey(orderId)) {
-                List<FinalizeComment> comments = commentMap.get(orderId);
-                order.setFinalizeComments(comments);
-            }
-        }
+        updateTrashOrdes(orders);
+        updateComments(orders);
 
         Map<String, List<Order>> groupContent = orders.stream()
                 .collect(Collectors.groupingBy(Order::getCity));
@@ -125,6 +116,18 @@ public class OrderService {
                 .collect(Collectors.toMap(Order::getOrderId, Order::getUrl));
     }
 
+    public void addTrash(List<String> data) throws IOException {
+        String orderId = trashOrderService.update(data);
+        Order order = getById(orderId);
+        updateTrashOrdes(Collections.singletonList(order));
+    }
+
+    public void addComment(FinalizeComment comment) throws IOException {
+        String orderId = finalizeCommentService.add(comment);
+        Order order = getById(orderId);
+        updateComments(Collections.singletonList(order));
+    }
+
     public void clearTrash() throws IOException {
         Set<String> usedIds = groups.stream()
                 .flatMap(group -> group.getOrders().stream())
@@ -141,6 +144,35 @@ public class OrderService {
                 .map(Order::getOrderId)
                 .collect(Collectors.toSet());
         finalizeCommentService.clear(usedIds);
+    }
+
+    private void updateTrashOrdes(List<Order> orders) throws IOException {
+        Map<String, List<TrashTask>> trashMap = trashOrderService.getMapByOrderId();
+        for (Order order : orders) {
+            String orderId = order.getOrderId();
+            if (trashMap.containsKey(orderId)) {
+                order.setTrashTasks(trashMap.get(orderId));
+            }
+        }
+    }
+
+    private void updateComments(List<Order> orders) throws IOException {
+        Map<String, List<FinalizeComment>> commentMap = finalizeCommentService.getMapByOrderId();
+        for (Order order : orders) {
+            String orderId = order.getOrderId();
+            if (commentMap.containsKey(orderId)) {
+                List<FinalizeComment> comments = commentMap.get(orderId);
+                order.setFinalizeComments(comments);
+            }
+        }
+    }
+
+    private Order getById(String orderId) {
+        return groups.stream()
+                .flatMap(group -> group.getOrders().stream())
+                .filter(order -> orderId.equals(order.getOrderId()))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Не найдена заявка с id:" + orderId));
     }
 
 }
