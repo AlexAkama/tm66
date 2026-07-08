@@ -88,6 +88,7 @@ public final class Normalizer {
         ADDRESS_REPLACE_TO_SPACE.add(" в ");
         ADDRESS_REPLACE_TO_SPACE.add(" ,");
         ADDRESS_REPLACE_TO_SPACE.add("К.");
+        ADDRESS_REPLACE_TO_SPACE.add("№");
 
         ADDRESS_REPLACE = new HashMap<>();
         ADDRESS_REPLACE.put("/", "-");
@@ -99,6 +100,7 @@ public final class Normalizer {
         ADDRESS_REMOVE.add("пл");
         ADDRESS_REMOVE.add("пр-кт");
         ADDRESS_REMOVE.add("пр-т");
+        ADDRESS_REMOVE.add("дом");
 
         // Объединяем все элементы множества в одну строку, разделенную '|'
         // \\Q и \\E нужны для безопасного экранирования любых спецсимволов в ключах
@@ -111,6 +113,7 @@ public final class Normalizer {
 
         ADDRESS_SPECIAL_REMOVE = new HashMap<>();
         ADDRESS_SPECIAL_REMOVE.put("Сосьва", Collections.singletonList("Серовский Р-н, "));
+        ADDRESS_SPECIAL_REMOVE.put("Свободный", Collections.singletonList("Свердловская"));
 
         POINT_FORM_REMOVE = new HashSet<>();
         POINT_FORM_REMOVE.add("ИП");
@@ -125,10 +128,13 @@ public final class Normalizer {
     }
 
     public static String normalizeCity(String name) {
+        name = removeBadElement(name);
         return CITY_REPLACEMENTS.getOrDefault(name, name);
     }
 
     public static String normalizeAddress(String address, String city) {
+        address = removeBadElement(address);
+        address = address.replace("зд.", " ");
         for (String s : ADDRESS_REPLACE_TO_SPACE) {
             address = address.replace(s, " ");
         }
@@ -146,17 +152,14 @@ public final class Normalizer {
         List<String> toRemove = ADDRESS_SPECIAL_REMOVE.get(city);
         if (toRemove != null) {
             for (String s : toRemove) {
-                if (address.startsWith(s)) return address.substring(s.length());
+                address = address.replaceAll(s, "");
             }
         }
         return address;
     }
 
     public static String normalizeAddressToMail(String address) {
-        for (String s : REMOVE) {
-            address = address.replace(s, "");
-        }
-
+        address = removeBadElement(address);
         for (Map.Entry<String, String> entry : ADDRESS_REPLACE.entrySet()) {
             address = address.replace(entry.getKey(), entry.getValue());
         }
@@ -164,11 +167,16 @@ public final class Normalizer {
     }
 
     public static String normalizePoint(String point) {
-        for (String s : REMOVE) {
-            point = point.replace(s, "");
-        }
+        point = removeBadElement(point);
         point = point.replaceAll("\\s+", " ");
         return point.trim();
+    }
+
+    public static String removeBadElement(String s) {
+        for (String remove : REMOVE) {
+            s = s.replace(remove, "");
+        }
+        return s;
     }
 
     public static String normalizePointToMail(String point) {

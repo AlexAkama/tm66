@@ -271,7 +271,11 @@
                 linkContainer.style.display = 'inline';
 
                 const extendElements = extendMap[selectedOrderId];
-                extendRenderFn(extendContainer, extendElements)
+                if (extendElements !== undefined) {
+                    extendRenderFn(extendContainer, extendElements)
+                } else {
+                    extendContainer.style.display = 'none';
+                }
 
             } else {
                 linkContainer.style.display = 'none';
