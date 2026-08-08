@@ -12,7 +12,7 @@ user:
     ftp-path: ${KGS_FTP:}
 
 app:
-  version: ver.:0.1.6
+  version: ${APP_VERSION:}
   ftp:
     host: ${FTP_HOST:}
     port: ${FTP_PORT:}
