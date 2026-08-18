@@ -272,6 +272,7 @@
 
                 const extendElements = extendMap[selectedOrderId];
                 if (extendElements !== undefined) {
+                    extendContainer.innerHTML='';
                     extendRenderFn(extendContainer, extendElements)
                 } else {
                     extendContainer.style.display = 'none';
@@ -280,6 +281,7 @@
             } else {
                 linkContainer.style.display = 'none';
                 extendContainer.style.display = 'none';
+                extendContainer.innerHTML = '';
             }
         });
     }
