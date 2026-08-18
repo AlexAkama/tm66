@@ -16,13 +16,15 @@ public final class TimeUtils {
     private static final DateTimeFormatter DATE = DateTimeFormatter.ofPattern("dd.MM.yyyy");
     private static final DateTimeFormatter SHORT = DateTimeFormatter.ofPattern("dd.MM");
 
+    public static final ZoneId EKB_Zone = ZoneId.of("Asia/Yekaterinburg");
+
 
     public static LocalDate toLocalDate(Date date) {
-        return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        return date.toInstant().atZone(EKB_Zone).toLocalDate();
     }
 
     public static String now() {
-        return LocalDateTime.now().format(DATE_TIME);
+        return LocalDateTime.now(EKB_Zone).format(DATE_TIME);
     }
 
     public static String date(LocalDate date) {
