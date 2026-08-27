@@ -8,10 +8,12 @@ import lombok.RequiredArgsConstructor;
 public enum TaskStatus {
     NEW("НОВАЯ", "yellow-mark"),
     WAITING("ОЖИДАЕТ", "olive-mark"),
+    PAUSED("ПАУЗА", "grey-mark"),
     CONFIRMED("OK", "green-mark"),
     IN_PROGRESS("В РАБОТЕ", "green-mark"),
     RETURNED("ВОЗВРАЩЕНА", "red-mark"),
-    READY("ВЫПОЛНЕНА", "sky-blue-mark");
+    READY("ВЫПОЛНЕНА", "sky-blue-mark")
+    ;
 
     private final String labelText;
     private final String css;
@@ -22,6 +24,8 @@ public enum TaskStatus {
                 return NEW;
             case "Ожидание":
                 return WAITING;
+            case "На паузе":
+                return PAUSED;
             case "Подтверждена":
             case "Подтверждена вторым уровнем":
                 return CONFIRMED;

@@ -125,6 +125,10 @@
             background-color: pink;
         }
 
+        .paused .order-header {
+            background-color: lightgray;
+        }
+
         .order-id,
         .target-date,
         .address {
@@ -382,9 +386,12 @@
     <div class="order"
          th:each="order : ${group.orders}"
          th:id="'order-'+${order.getOrderId()}"
-         th:classappend="${order.getStatus().name() == 'RETURNED' ? 'returned' :
-                            (order.getStatus().name() == 'READY' ? 'ready' :
-                            (order.getStatus().name() == 'IN_PROGRESS' ? 'in-progress' : ''))}"
+         th:with="statusName=${order.getStatus().name()}"
+         th:classappend="${statusName == 'IN_PROGRESS' ? 'in-progress' :
+                            (statusName == 'READY' ? 'ready' :
+                            (statusName == 'RETURNED' ? 'returned' :
+                            (statusName == 'PAUSED' ? 'paused' :
+                            '')))}"
     >
 
         <div class="order-header">
