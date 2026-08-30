@@ -27,7 +27,7 @@ public class UIController {
 
     @GetMapping("/")
     public String home(Model model) {
-        model.addAttribute("version", appParams.getVersion());
+        model.addAttribute("version", appParams.getAppVersion());
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null && auth.isAuthenticated() && !(auth.getPrincipal() instanceof String)) {
             UserDetails userDetails = (UserDetails) auth.getPrincipal();
@@ -40,7 +40,7 @@ public class UIController {
 
     @GetMapping("/upload")
     public String showUploadForm(Model model) {
-        model.addAttribute("version", appParams.getVersion());
+        model.addAttribute("version", appParams.getAppVersion());
         return "upload";
     }
 
@@ -48,7 +48,7 @@ public class UIController {
     public String showGroups(Model model,
                              @RequestParam(name = "admin", required = false, defaultValue = "false") boolean admin
     ) {
-        model.addAttribute("version", appParams.getVersion());
+        model.addAttribute("version", appParams.getAppVersion());
         model.addAttribute("groups", orderService.getGroups());
         model.addAttribute("nowEnd", orderService.getNowEndOrderId());
         model.addAttribute("returned", orderService.getReturnedOrderId());
@@ -59,7 +59,7 @@ public class UIController {
 
     @GetMapping("/edit")
     public String showEditForm(Model model) throws IOException {
-        model.addAttribute("version", appParams.getVersion());
+        model.addAttribute("version", appParams.getAppVersion());
         model.addAttribute("trashMap", orderService.getTrashLinkMap());
         model.addAttribute("returnedMap", orderService.getReturnedLinkMap());
         model.addAttribute("trashDecodeMap", trashOrderService.getMapByOrderId());
@@ -69,7 +69,7 @@ public class UIController {
 
     @GetMapping("/login")
     public String login(Model model) {
-        model.addAttribute("version", appParams.getVersion());
+        model.addAttribute("version", appParams.getAppVersion());
         return "login";
     }
 

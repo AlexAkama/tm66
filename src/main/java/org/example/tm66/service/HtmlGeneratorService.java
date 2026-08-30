@@ -26,7 +26,7 @@ public class HtmlGeneratorService {
     public void generateGroupsHtml(String path) {
         Path outputPath = Paths.get(path);
         Context context = new Context();
-        context.setVariable("version", appParams.getVersion());
+        context.setVariable("version", appParams.getAppVersion());
         context.setVariable("groups", orderService.getGroups());
         context.setVariable("nowEnd", orderService.getNowEndOrderId());
         context.setVariable("returned", orderService.getReturnedOrderId());

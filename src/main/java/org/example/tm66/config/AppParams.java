@@ -19,9 +19,16 @@ public class AppParams {
     @NotBlank(message = "version не может быть пустым")
     private String version;
 
+    @NotBlank(message = "location не может быть пустым")
+    private String location;
+
     @PostConstruct
     void init() {
-        log.info("[INIT] APP. Version: {}}", version);
+        log.info("[INIT] APP. Version: {}. Location: {}}", version, location);
+    }
+
+    public String getAppVersion() {
+        return version + "-" + location;
     }
 
 }
