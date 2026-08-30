@@ -75,8 +75,9 @@ public final class Locations {
         LOCATIONS.put("Гари", "[3]->N4->SE->NE");
         LOCATIONS.put("Кытлым", "[3]->N4->W");
         LOCATIONS.put("Рудничный", "[3]->N5-(0)");
-        LOCATIONS.put("Карпинск", "[3]->N5-(1)");
-        LOCATIONS.put("Краснотурьинск", "[3]->N5-(2)");
+        LOCATIONS.put("Краснотурьинск", "[3]->N5-(1)");
+        LOCATIONS.put("Андриановичи", "[3]->N5-(1)-NE1");
+        LOCATIONS.put("Карпинск", "[3]->N5-(2)");
         LOCATIONS.put("Волчанск", "[3]->N5-(3)");
         LOCATIONS.put("Североуральск", "[3]->N6-(1)");
         LOCATIONS.put("Покровск-Уральский", "[3]->N6-(1)-W1");

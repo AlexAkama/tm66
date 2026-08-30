@@ -3,6 +3,7 @@ package org.example.tm66.processor;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.tm66.model.Task;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -129,7 +130,8 @@ public final class Normalizer {
 
     public static String normalizeCity(String name) {
         name = removeBadElement(name);
-        return CITY_REPLACEMENTS.getOrDefault(name, name);
+        name = name.replace("г.", "");
+        return CITY_REPLACEMENTS.getOrDefault(name, name.trim());
     }
 
     public static String normalizeAddress(String address, String city) {
@@ -194,5 +196,15 @@ public final class Normalizer {
         return s.replace(right, "");
     }
 
-
+    public static void extractCityFromAddress(Task task) {
+        if ("Нижний Тагил".equals(task.getCity())) {
+            String realCity = "Черноисточинск";
+            String address = task.getAddress();
+            if (address.startsWith(realCity + ",")) {
+                address = address.substring(realCity.length() + 1).trim();
+                task.setAddress(address);
+                task.setCity(realCity);
+            }
+         }
+    }
 }

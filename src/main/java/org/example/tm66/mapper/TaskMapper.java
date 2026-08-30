@@ -77,6 +77,7 @@ public class TaskMapper {
 
         String normalizeAddress = Normalizer.normalizeAddress(address, task.getCity());
         task.setAddress(normalizeAddress);
+        Normalizer.extractCityFromAddress(task);
 
         String workGroup = row.getWorkGroup();
         task.setWork(isNotBlank(workGroup) ? workGroup : row.getOrderType());
