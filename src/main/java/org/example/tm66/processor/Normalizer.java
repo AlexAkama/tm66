@@ -75,6 +75,7 @@ public final class Normalizer {
         CITY_REPLACEMENTS.put("Северная, Верхнесалдинский Р-н", "Северная");
         CITY_REPLACEMENTS.put("Кировоград", "Кировград");
         CITY_REPLACEMENTS.put("верхний тагил", "Верхний Тагил");
+        CITY_REPLACEMENTS.put("Лёвиха", "Левиха");
 
         ADDRESS_REPLACE_TO_SPACE = new HashSet<>();
         ADDRESS_REPLACE_TO_SPACE.add("ул.");
