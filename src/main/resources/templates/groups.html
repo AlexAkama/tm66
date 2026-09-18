@@ -65,11 +65,9 @@
         }
 
         .order-info {
-            font-family: "Tahoma", Geneva, sans-serif;
             position: absolute;
             right: 0;
-            top: 8px;
-            font-size: 0.7em;
+            top: 5px;
             display: flex;
             align-items: center;
             gap: 3px;
@@ -83,11 +81,13 @@
         }
 
         .order-status {
+            font-family: "Tahoma", Geneva, sans-serif;
             border: 1px solid lightgray;
             border-radius: 5px;
-            padding: 1px 3px;
+            padding: 5px 3px;
             min-height: 16px;
             min-width: 16px;
+            font-size: 0.7em;
         }
 
         .order-header {
@@ -154,10 +154,6 @@
 
         .address {
             font-weight: bold;
-        }
-
-        .target-date {
-            margin-right: 40px;
         }
 
         .create-at {
@@ -359,7 +355,7 @@
 <button id="global-visible-switch">Показать заявки</button>
 
 <div class="returned-orders" th:if="${returned != null && returned.size() > 0}">
-    <h3 class="category-header red">Возвращены</h3>
+    <h3 class="category-header red" th:text="'Возвращены ' + ${returned.size()}"></h3>
     <div class="category-content">
         <span th:each="orderId : ${returned}">
             <a class="order-id red-mark category-order"
@@ -372,7 +368,7 @@
 </div>
 
 <div class="now-end-orders" th:if="${nowEnd != null && nowEnd.size() > 0}">
-    <h3 class="category-header blue">Заканчиваются сегодня</h3>
+    <h3 class="category-header blue" th:text="'Заканчиваются сегодня ' + ${nowEnd.size()}"></h3>
     <div class="now-end-content">
         <span th:each="orderId : ${nowEnd}">
             <a class="order-id blue-mark category-order"
@@ -408,9 +404,6 @@
             <span class="address"
                   th:text="${order.getAddress()} + ${order.getAddress().equals('') || order.getPoint().equals('') ? '': ','}"></span>
             <span class="address" th:text="${order.getPoint()}"></span>
-            <span class="target-date"
-                  th:text="${order.getTargetDateString()}"
-                  th:classappend="${order.getTargetDateCss()}"></span>
         </div>
 
         <div class="order-content hidden">
@@ -470,6 +463,9 @@
             <span class="order-status"
                   th:text="${order.getStatus().getLabelText()}"
                   th:classappend="${order.getStatus().getCss()}"></span>
+            <span class="target-date"
+                  th:text="${order.getTargetDateString()}"
+                  th:classappend="${statusName == 'READY' ? 'hidden' : order.getTargetDateCss()}"></span>
         </div>
 
         <div th:if="${admin}" th:text="${order.getMailToUrl()}"></div>
