@@ -50,11 +50,13 @@ public final class WorkValidator {
     }
 
     public static boolean isRepair(String work) {
-        return work.startsWith("Ремонт");
+        return work.startsWith("Ремонт")
+                || work.startsWith("Замена замка");
     }
 
     public static boolean isElectro(String work) {
-        return work.equals("Устранение неполадок с электрикой");
+        return work.equals("Устранение неполадок с электрикой")
+                || work.equals("Замена блока питания");
     }
 
 }

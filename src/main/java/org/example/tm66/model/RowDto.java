@@ -34,13 +34,13 @@ public class RowDto {
         try {
             switch (field) {
                 case ORDER_TYPE:
-                    this.orderType = cell.getStringCellValue();
+                    this.orderType = cell.getStringCellValue().trim();
                     break;
                 case CHANNEL:
-                    this.channel = cell.getStringCellValue();
+                    this.channel = cell.getStringCellValue().trim();
                     break;
                 case CITY:
-                    this.city = cell.getStringCellValue();
+                    this.city = cell.getStringCellValue().trim();
                     break;
                 case CREATE_DATE:
                     this.createDate = TimeUtils.toLocalDate(cell.getDateCellValue());
@@ -52,34 +52,34 @@ public class RowDto {
                     this.orderId = cell.toString();
                     break;
                 case POINT:
-                    this.point = cell.getStringCellValue();
+                    this.point = cell.getStringCellValue().trim();
                     break;
                 case ADDRESS:
-                    this.address = cell.getStringCellValue();
+                    this.address = cell.getStringCellValue().trim();
                     break;
                 case WORK_GROUP:
-                    this.workGroup = cell.getStringCellValue();
+                    this.workGroup = cell.getStringCellValue().trim();
                     break;
                 case VOLUME:
                     this.volume = (int) cell.getNumericCellValue();
                     break;
                 case JTI_COMMENT:
-                    this.jtiComment = cell.getStringCellValue();
+                    this.jtiComment = cell.getStringCellValue().trim();
                     break;
                 case EXECUTOR_COMMENT:
-                    this.executorComment = cell.getStringCellValue();
+                    this.executorComment = cell.getStringCellValue().trim();
                     break;
                 case INIT_COMMENT:
-                    this.initComment = cell.getStringCellValue();
+                    this.initComment = cell.getStringCellValue().trim();
                     break;
                 case ORDER_STATUS:
-                    this.orderStatus = cell.getStringCellValue();
+                    this.orderStatus = cell.getStringCellValue().trim();
                     break;
                 case ORDER_LINK:
-                    this.orderLink = cell.getStringCellValue();
+                    this.orderLink = cell.getStringCellValue().trim();
                     break;
                 case EQUIPMENT:
-                    this.equipment = cell.getStringCellValue();
+                    this.equipment = cell.getStringCellValue().trim();
                     break;
             }
         } catch (Exception e) {
