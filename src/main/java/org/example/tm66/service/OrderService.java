@@ -40,6 +40,7 @@ public class OrderService {
 
     private Workbook workbook;
     private List<Group> groups;
+    private int total;
 
     public void process(Workbook w) throws IOException {
         this.workbook = w;
@@ -78,6 +79,11 @@ public class OrderService {
                 .map(Group::new)
                 .sorted(Comparator.comparing(Group::getLocation))
                 .collect(Collectors.toList());
+
+        total = groups.stream()
+                .mapToInt(o -> o.getOrders().size())
+                .sum();
+
     }
 
     public List<String> getNowEndOrderId() {

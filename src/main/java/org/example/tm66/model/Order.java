@@ -104,6 +104,18 @@ public class Order {
         return hasTaskMatching(Task::isElectroWork);
     }
 
+    public boolean isRecovery() {
+        return hasTaskMatching(Task::isRecoveryWork);
+    }
+
+    public boolean isReceiving() {
+        return hasTaskMatching(Task::isReceivingWork);
+    }
+
+    public boolean isIssuing() {
+        return hasTaskMatching(Task::isIssuingWork);
+    }
+
     public String getMailToUrl() {
         String text = "ОТЧЕТ" + " "
                 + getOrderId() + " "

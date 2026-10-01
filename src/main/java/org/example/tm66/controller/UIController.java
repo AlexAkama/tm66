@@ -50,6 +50,7 @@ public class UIController {
     ) {
         model.addAttribute("version", appParams.getAppVersion());
         model.addAttribute("groups", orderService.getGroups());
+        model.addAttribute("total", orderService.getTotal());
         model.addAttribute("nowEnd", orderService.getNowEndOrderId());
         model.addAttribute("returned", orderService.getReturnedOrderId());
         model.addAttribute("now", TimeUtils.now());

@@ -76,6 +76,8 @@ public final class Normalizer {
         CITY_REPLACEMENTS.put("Кировоград", "Кировград");
         CITY_REPLACEMENTS.put("верхний тагил", "Верхний Тагил");
         CITY_REPLACEMENTS.put("Лёвиха", "Левиха");
+        CITY_REPLACEMENTS.put("Черемухово, Североуральск", "Черемухово");
+        CITY_REPLACEMENTS.put("Рудничный, Краснотурьинск", "Рудничный");
 
         ADDRESS_REPLACE_TO_SPACE = new HashSet<>();
         ADDRESS_REPLACE_TO_SPACE.add("ул.");
@@ -116,6 +118,8 @@ public final class Normalizer {
         ADDRESS_SPECIAL_REMOVE = new HashMap<>();
         ADDRESS_SPECIAL_REMOVE.put("Сосьва", Collections.singletonList("Серовский Р-н, "));
         ADDRESS_SPECIAL_REMOVE.put("Свободный", Collections.singletonList("Свердловская"));
+        ADDRESS_SPECIAL_REMOVE.put("Черемухово", Collections.singletonList("Североуральск, "));
+        ADDRESS_SPECIAL_REMOVE.put("Рудничный", Collections.singletonList("Краснотурьинск, "));
 
         POINT_FORM_REMOVE = new HashSet<>();
         POINT_FORM_REMOVE.add("ИП");
@@ -132,7 +136,8 @@ public final class Normalizer {
     public static String normalizeCity(String name) {
         name = removeBadElement(name);
         name = name.replace("г.", "");
-        return CITY_REPLACEMENTS.getOrDefault(name, name.trim());
+        name = name.trim();
+        return CITY_REPLACEMENTS.getOrDefault(name, name);
     }
 
     public static String normalizeAddress(String address, String city) {

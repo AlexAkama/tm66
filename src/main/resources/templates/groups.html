@@ -351,7 +351,7 @@
 </a>
 
 <h1>KGS</h1>
-<div class="actual-time" th:text="'Актуально на ' + ${now}"></div>
+<div class="actual-time" th:text="'Актуально на ' + ${now} + '; Всего&nbsp;заявок:&nbsp;' + ${total}"></div>
 <button id="global-visible-switch">Показать заявки</button>
 
 <div class="returned-orders" th:if="${returned != null && returned.size() > 0}">
@@ -460,6 +460,12 @@
                  src="https://pics66.ru/9/truck.png" alt="грузовой">
             <img class="info-img" th:if="${order.isTrash()}"
                  src="https://pics66.ru/9/trash.png" alt="утилизация">
+            <img class="info-img" th:if="${order.isRecovery()}" alt="восстановление"
+                 src="https://pics66.ru/9/re_dark.png">
+            <img class="info-img" th:if="${order.isReceiving()}" alt="получение"
+                 src="https://pics66.ru/9/down.png">
+            <img class="info-img" th:if="${order.isIssuing()}" alt="выдача"
+                 src="https://pics66.ru/9/up.png">
             <span class="order-status"
                   th:text="${order.getStatus().getLabelText()}"
                   th:classappend="${order.getStatus().getCss()}"></span>

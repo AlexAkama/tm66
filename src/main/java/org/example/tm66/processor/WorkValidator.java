@@ -27,8 +27,6 @@ public final class WorkValidator {
                     ))
             );
 
-    private static final String TRASH = "Утилизация оборудования";
-
     public static boolean isCargo(String work) {
         if (isBlank(work)) {
             return false;
@@ -42,7 +40,7 @@ public final class WorkValidator {
     }
 
     public static boolean isTrash(String work) {
-        return TRASH.equals(work);
+        return work.equals("Утилизация оборудования");
     }
 
     public static boolean isAudit(String work) {
@@ -57,6 +55,18 @@ public final class WorkValidator {
     public static boolean isElectro(String work) {
         return work.equals("Устранение неполадок с электрикой")
                 || work.equals("Замена блока питания");
+    }
+
+    public static boolean isRecovery(String work) {
+        return work.equals("Комплекс работ по восстановлению оборудования на складе");
+    }
+
+    public static boolean isReceiving(String work) {
+        return work.equals("Получение");
+    }
+
+    public static boolean isIssuing(String work) {
+        return work.equals("Выдача");
     }
 
 }

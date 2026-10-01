@@ -79,14 +79,17 @@ public class TaskMapper {
         task.setAddress(normalizeAddress);
         Normalizer.extractCityFromAddress(task);
 
-        String workGroup = row.getWorkGroup();
-        task.setWork(isNotBlank(workGroup) ? workGroup : row.getOrderType());
+        String workGroup = isNotBlank(row.getWorkGroup()) ? row.getWorkGroup().trim() : row.getOrderType();
+        task.setWork(workGroup);
 
         task.setCargoWork(WorkValidator.isCargo(workGroup));
         task.setTrashWork(WorkValidator.isTrash(workGroup));
         task.setAuditWork(WorkValidator.isAudit(workGroup));
         task.setRepairWork(WorkValidator.isRepair(workGroup));
         task.setElectroWork(WorkValidator.isElectro(workGroup));
+        task.setRecoveryWork(WorkValidator.isRecovery(workGroup));
+        task.setReceivingWork(WorkValidator.isReceiving(workGroup));
+        task.setIssuingWork(WorkValidator.isIssuing(workGroup));
 
         task.setVolume(row.getVolume());
 

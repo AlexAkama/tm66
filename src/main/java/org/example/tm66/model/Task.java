@@ -23,6 +23,9 @@ public class Task {
     private boolean isAuditWork;
     private boolean isRepairWork;
     private boolean isElectroWork;
+    private boolean isRecoveryWork;
+    private boolean isReceivingWork;
+    private boolean isIssuingWork;
     private Integer volume;
     private String equipment;
     private String comment;

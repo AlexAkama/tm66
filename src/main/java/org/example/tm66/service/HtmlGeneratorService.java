@@ -28,6 +28,7 @@ public class HtmlGeneratorService {
         Context context = new Context();
         context.setVariable("version", appParams.getAppVersion());
         context.setVariable("groups", orderService.getGroups());
+        context.setVariable("total", orderService.getTotal());
         context.setVariable("nowEnd", orderService.getNowEndOrderId());
         context.setVariable("returned", orderService.getReturnedOrderId());
         context.setVariable("now", TimeUtils.now());
