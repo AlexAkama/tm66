@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 public final class Normalizer {
 
     private static final Map<String, String> CITY_REPLACEMENTS;
+    private static final Map<String, String> CITY_TO_CHANGE;
 
     private static final Set<String> ADDRESS_REPLACE_TO_SPACE;
     private static final Set<String> ADDRESS_REMOVE;
@@ -93,6 +94,8 @@ public final class Normalizer {
         ADDRESS_REPLACE_TO_SPACE.add(" ,");
         ADDRESS_REPLACE_TO_SPACE.add("К.");
         ADDRESS_REPLACE_TO_SPACE.add("№");
+        ADDRESS_REPLACE_TO_SPACE.add(" , ");
+        ADDRESS_REPLACE_TO_SPACE.add(" . ");
 
         ADDRESS_REPLACE = new HashMap<>();
         ADDRESS_REPLACE.put("/", "-");
@@ -120,6 +123,9 @@ public final class Normalizer {
         ADDRESS_SPECIAL_REMOVE.put("Свободный", Collections.singletonList("Свердловская"));
         ADDRESS_SPECIAL_REMOVE.put("Черемухово", Collections.singletonList("Североуральск, "));
         ADDRESS_SPECIAL_REMOVE.put("Рудничный", Collections.singletonList("Краснотурьинск, "));
+        ADDRESS_SPECIAL_REMOVE.put("Нейво-Рудянка", Collections.singletonList("п, "));
+        ADDRESS_SPECIAL_REMOVE.put("Калиново", Collections.singletonList("Невьянский Р-н, "));
+        ADDRESS_SPECIAL_REMOVE.put("Цементный", Collections.singletonList("Невьянский Р-н, "));
 
         POINT_FORM_REMOVE = new HashSet<>();
         POINT_FORM_REMOVE.add("ИП");
@@ -130,6 +136,10 @@ public final class Normalizer {
         REMOVE.add("№");
         REMOVE.add("«");
         REMOVE.add("»");
+
+        CITY_TO_CHANGE = new HashMap<>();
+        CITY_TO_CHANGE.put("Нижний Тагил", "Черноисточинск");
+        CITY_TO_CHANGE.put("Нижняя Тура", "Ис");
 
     }
 
@@ -147,7 +157,8 @@ public final class Normalizer {
             address = address.replace(s, " ");
         }
         address = address.replaceAll(ADDRESS_REMOVE_REGEX, "");
-        address = address.replace(" , ", " ");
+        address = address.replace(" ,,", ",");
+        address = address.replace(" ,.", ",");
         address = address.replaceAll("\\s{2,}", " ");
         address = specialRemove(address, city);
         while (address.startsWith(city + ",")) {
@@ -203,14 +214,15 @@ public final class Normalizer {
     }
 
     public static void extractCityFromAddress(Task task) {
-        if ("Нижний Тагил".equals(task.getCity())) {
-            String realCity = "Черноисточинск";
-            String address = task.getAddress();
-            if (address.startsWith(realCity + ",")) {
-                address = address.substring(realCity.length() + 1).trim();
-                task.setAddress(address);
-                task.setCity(realCity);
-            }
-         }
+        String city = task.getCity();
+        if (!CITY_TO_CHANGE.containsKey(city)) return;
+        String address = task.getAddress();
+        String realCity = CITY_TO_CHANGE.get(city);
+        if (address.startsWith(realCity + ",")) {
+            address = address.substring(realCity.length() + 1).trim();
+            task.setAddress(address);
+            task.setCity(realCity);
+        }
     }
+
 }
