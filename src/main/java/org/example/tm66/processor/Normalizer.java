@@ -96,6 +96,7 @@ public final class Normalizer {
         ADDRESS_REPLACE_TO_SPACE.add("№");
         ADDRESS_REPLACE_TO_SPACE.add(" , ");
         ADDRESS_REPLACE_TO_SPACE.add(" . ");
+        ADDRESS_REPLACE_TO_SPACE.add(" г ");
 
         ADDRESS_REPLACE = new HashMap<>();
         ADDRESS_REPLACE.put("/", "-");
@@ -161,7 +162,7 @@ public final class Normalizer {
         address = address.replace(" ,.", ",");
         address = address.replaceAll("\\s{2,}", " ");
         address = specialRemove(address, city);
-        while (address.startsWith(city + ",")) {
+        while (address.startsWith(city + ",") || address.startsWith(city + " ")) {
             address = address.substring(city.length() + 1).trim();
         }
         return address.trim();
