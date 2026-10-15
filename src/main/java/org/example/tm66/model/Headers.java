@@ -101,7 +101,11 @@ public enum Headers {
 
     // Связанные заявки,
 
-    EQUIPMENT("Оборудование");
+    EQUIPMENT("Оборудование"),
+
+    LINKED("Связанные заявки")
+
+    ;
 
     @Getter
     private final String text;

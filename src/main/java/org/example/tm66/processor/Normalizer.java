@@ -27,6 +27,7 @@ public final class Normalizer {
 
     private static final Map<String, List<String>> ADDRESS_SPECIAL_REMOVE;
 
+    private static final Set<String> POINT_TO_SPASE;
     private static final Set<String> POINT_FORM_REMOVE;
 
     private static final Set<String> REMOVE;
@@ -128,6 +129,10 @@ public final class Normalizer {
         ADDRESS_SPECIAL_REMOVE.put("Калиново", Collections.singletonList("Невьянский Р-н, "));
         ADDRESS_SPECIAL_REMOVE.put("Цементный", Collections.singletonList("Невьянский Р-н, "));
 
+        POINT_TO_SPASE = new HashSet<>();
+        POINT_TO_SPASE.add("/");
+        POINT_TO_SPASE.add("\\");
+
         POINT_FORM_REMOVE = new HashSet<>();
         POINT_FORM_REMOVE.add("ИП");
 
@@ -188,6 +193,9 @@ public final class Normalizer {
 
     public static String normalizePoint(String point) {
         point = removeBadElement(point);
+        for (String s : POINT_TO_SPASE) {
+            point = point.replace(s, " ");
+        }
         point = point.replaceAll("\\s+", " ");
         return point.trim();
     }

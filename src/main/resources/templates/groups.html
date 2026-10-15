@@ -207,7 +207,12 @@
             font-family: "Tahoma", Geneva, sans-serif;
         }
 
-        .comment-header {
+        .linked-orders {
+            margin-top: 30px;
+        }
+
+        .comment-header,
+        .linked-order-header {
             margin-left: 10px;
         }
 
@@ -215,6 +220,10 @@
         .finalize-comments {
             margin: 5px 0 5px 20px;
             font-size: 0.8em;
+        }
+
+        .linked-order-content {
+            margin: 5px 0 5px 20px;
         }
 
         .finalize-comments {
@@ -437,13 +446,25 @@
                 <div class="comment-header">КОММЕНТАРИЙ:</div>
                 <div class="comment-content" th:utext="${order.getComment()}"></div>
             </div>
-            <div>
-                <table class="finalize-comments" th:if="${order.getFinalizeComments() != null}">
+            <div th:if="${order.getFinalizeComments() != null}">
+                <table class="finalize-comments">
                     <tr th:each="comment : ${order.getFinalizeComments()}">
                         <td class="finalize-comment-data" th:text="${comment.getShortDate()}"></td>
                         <td class="finalize-comment-content" th:text="${comment.getComment()}"></td>
                     </tr>
                 </table>
+            </div>
+            <div class="linked-orders" th:if="${order.getLinkedOrder() != null}">
+                <div class="linked-order-header">Связанные заявки</div>
+                <div class="linked-order-content">
+                    <span th:each="linkedOrder : ${order.getLinkedOrder()}">
+                        <a class="order-id blue-mark category-order"
+                           th:text="${linkedOrder}"
+                           th:href="'#order-'+${linkedOrder}"
+                           th:attr="data-id=${linkedOrder}"
+                        ></a>
+                    </span>
+                </div>
             </div>
             <div class="response-buffer" th:unless="${order.getComment() != null}"></div>
 

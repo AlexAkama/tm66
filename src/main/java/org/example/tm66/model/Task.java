@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @Setter
@@ -31,6 +32,7 @@ public class Task {
     private String comment;
     private LocalDate targetDate;
     private TaskStatus status;
+    private List<String> linkedOrder;
 
     @Override
     public String toString() {

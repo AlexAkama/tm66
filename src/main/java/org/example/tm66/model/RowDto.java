@@ -28,6 +28,7 @@ public class RowDto {
     private String orderStatus;
     private String orderLink;
     private String equipment;
+    private String linked;
 
     public void set(Headers field, Cell cell) {
         if (cell == null) return;
@@ -61,7 +62,7 @@ public class RowDto {
                     this.workGroup = cell.getStringCellValue().trim();
                     break;
                 case VOLUME:
-                    this.volume = (int) cell.getNumericCellValue();
+                    this.volume = extractVolumeOrDefault(cell, -1);
                     break;
                 case JTI_COMMENT:
                     this.jtiComment = cell.getStringCellValue().trim();
@@ -81,10 +82,20 @@ public class RowDto {
                 case EQUIPMENT:
                     this.equipment = cell.getStringCellValue().trim();
                     break;
+                case LINKED:
+                    this.linked = cell.getStringCellValue().trim();
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
             System.out.println(field.getText() + ": '" + cell + "'");
+        }
+    }
+
+    private static Integer extractVolumeOrDefault(Cell cell, Integer defaultValue) {
+        try {
+            return (int) cell.getNumericCellValue();
+        } catch (Exception e) {
+            return defaultValue;
         }
     }
 

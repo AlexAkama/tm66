@@ -10,6 +10,7 @@ import org.example.tm66.processor.Locations;
 import org.example.tm66.processor.Normalizer;
 import org.example.tm66.processor.WorkValidator;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -47,8 +48,8 @@ public class TaskMapper {
     public static List<Task> map(List<RowDto> rows) {
         return rows.stream()
                 .filter(row -> row.getVolume() != null)
-                .filter(row -> row.getVolume() > 0)
-                .filter(row -> !FILTERED_WORKS.contains(row.getWorkGroup()))
+                //.filter(row -> row.getVolume() > 0)
+                //.filter(row -> !FILTERED_WORKS.contains(row.getWorkGroup()))
                 .map(TaskMapper::map)
                 .collect(Collectors.toList());
     }
@@ -107,12 +108,20 @@ public class TaskMapper {
 
         task.setStatus(TaskStatus.get(row.getOrderStatus()));
 
+        task.setLinkedOrder(extractLinked(row.getLinked()));
+
         return task;
     }
 
     private static String extractCity(String address) {
         int index = address.indexOf(",");
         return address.substring(0, index).trim();
+    }
+
+    private static List<String> extractLinked(String linked) {
+        if (linked == null || linked.isEmpty()) return null;
+        String[] split = linked.split(",\\s+");
+        return Arrays.asList(split);
     }
 
     private static void enrich(RowDto row) {

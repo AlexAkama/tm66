@@ -19,7 +19,30 @@ class NormalizerTest {
         String address = "Новоуральск, Новоуральск, Новоуральск г Победы ул 22";
         String city = "Новоуральск";
         String normalized = Normalizer.normalizeAddress(address, city);
-        assertEquals("Победы 226", normalized);
+        assertEquals("Победы 22", normalized);
+    }
+
+    @Test
+    void test_3() {
+        String point;
+        String normalized;
+
+        point = "Пятерочка ООО /";
+        normalized = Normalizer.normalizePoint(point);
+//        assertEquals("Победы 226", normalized);
+        System.out.println(normalized);
+
+        point = "Рябушка ООО / Гурман";
+        normalized = Normalizer.normalizePoint(point);
+//        assertEquals("Победы 226", normalized);
+        System.out.println(normalized);
+
+        point = "А-Оптимус ООО\\АВРОРА";
+        normalized = Normalizer.normalizePoint(point);
+//        assertEquals("Победы 226", normalized);
+        System.out.println(normalized);
+
     }
 
 }
+

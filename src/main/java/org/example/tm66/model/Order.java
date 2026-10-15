@@ -25,6 +25,10 @@ public class Order {
     @Setter
     private List<FinalizeComment> finalizeComments;
 
+    public List<String> getLinkedOrder() {
+        return tasks.get(0).getLinkedOrder();
+    }
+
     public LocalDate getCreatAt() {
         return tasks.get(0).getCreatAt();
     }
