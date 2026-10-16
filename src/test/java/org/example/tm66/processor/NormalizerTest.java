@@ -7,40 +7,53 @@ import static org.junit.jupiter.api.Assertions.*;
 class NormalizerTest {
 
     @Test
-    void test_1() {
-        String address = "\"Свободный, Свободный, Свердловская \", Свободы,38";
-        String city = "Свободный";
-        String normalized = Normalizer.normalizeAddress(address, city);
+    void test_address() {
+        String address;
+        String city;
+        String normalized;
+
+        address = "\"Свободный, Свободный, Свердловская \", Свободы,38";
+        city = "Свободный";
+        normalized = Normalizer.normalizeAddress(address, city);
         assertEquals("Свободы,38", normalized);
-    }
 
-    @Test
-    void test_2() {
-        String address = "Новоуральск, Новоуральск, Новоуральск г Победы ул 22";
-        String city = "Новоуральск";
-        String normalized = Normalizer.normalizeAddress(address, city);
+        address = "Новоуральск, Новоуральск, Новоуральск г Победы ул 22";
+        city = "Новоуральск";
+        normalized = Normalizer.normalizeAddress(address, city);
         assertEquals("Победы 22", normalized);
+
+        address = "Сосьва, Североуральск, Коржавина ул. 34";
+        city = "Сосьва";
+        normalized = Normalizer.normalizeAddress(address, city);
+        assertEquals("Коржавина 34", normalized);
     }
 
     @Test
-    void test_3() {
+    void test_city() {
+        String city;
+        String normalized;
+
+        city = "Сосьва, Североуральск";
+        normalized = Normalizer.normalizeCity(city);
+        assertEquals("Сосьва", normalized);
+    }
+
+    @Test
+    void test_point() {
         String point;
         String normalized;
 
         point = "Пятерочка ООО /";
         normalized = Normalizer.normalizePoint(point);
-//        assertEquals("Победы 226", normalized);
-        System.out.println(normalized);
+        assertEquals("Пятерочка ООО", normalized);
 
         point = "Рябушка ООО / Гурман";
         normalized = Normalizer.normalizePoint(point);
-//        assertEquals("Победы 226", normalized);
-        System.out.println(normalized);
+        assertEquals("Рябушка ООО Гурман", normalized);
 
         point = "А-Оптимус ООО\\АВРОРА";
         normalized = Normalizer.normalizePoint(point);
-//        assertEquals("Победы 226", normalized);
-        System.out.println(normalized);
+        assertEquals("А-Оптимус ООО АВРОРА", normalized);
 
     }
 

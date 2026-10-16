@@ -3,6 +3,7 @@ package org.example.tm66.mapper;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.logging.log4j.util.Strings;
+import org.example.tm66.model.OrderInfo;
 import org.example.tm66.model.RowDto;
 import org.example.tm66.model.Task;
 import org.example.tm66.model.TaskStatus;
@@ -10,7 +11,6 @@ import org.example.tm66.processor.Locations;
 import org.example.tm66.processor.Normalizer;
 import org.example.tm66.processor.WorkValidator;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -46,39 +46,68 @@ public class TaskMapper {
     }
 
     public static List<Task> map(List<RowDto> rows) {
+        Map<String, OrderInfo> orderInfoMap = new HashMap<>();
         return rows.stream()
                 .filter(row -> row.getVolume() != null)
                 //.filter(row -> row.getVolume() > 0)
                 //.filter(row -> !FILTERED_WORKS.contains(row.getWorkGroup()))
-                .map(TaskMapper::map)
+                .map(rowDto -> TaskMapper.map(rowDto, orderInfoMap))
                 .collect(Collectors.toList());
     }
 
-    public static Task map(RowDto row) {
+    public static Task map(RowDto row, Map<String, OrderInfo> orderInfoMap) {
         Task task = new Task();
-        task.setCreatAt(row.getCreateDate());
 
         enrich(row);
         trimTrash(row);
         separateWarehouse(row);
 
-        task.setOrderId(row.getOrderId());
-        task.setUrl(row.getOrderLink());
+        String orderId = row.getOrderId();
+        OrderInfo orderInfo;
+        if (!orderInfoMap.containsKey(orderId)){
 
-        String city = row.getCity();
-        String address = row.getAddress();
-        if (Strings.isBlank(city)) {
-            city = extractCity(address);
-            address = address.substring(city.length() + 1).trim();
+            orderInfo = new OrderInfo();
+            orderInfo.setOrderId(orderId);
+            orderInfo.setCreatAt(row.getCreateDate());
+            orderInfo.setUrl(row.getOrderLink());
+
+            String city = row.getCity();
+            String address = row.getAddress();
+            if (Strings.isBlank(city)) {
+                city = extractCityFromAddres(address);
+                address = address.substring(city.length() + 1).trim();
+            }
+
+            String normalizeCity = Normalizer.normalizeCity(city);
+            orderInfo.setCity(normalizeCity);
+
+            String normalizeAddress = Normalizer.normalizeAddress(address, normalizeCity);
+            orderInfo.setAddress(normalizeAddress);
+            Normalizer.extractCityFromAddress(orderInfo);
+
+            orderInfo.setLocation(Locations.getLocation(normalizeCity));
+
+            String contactRaw = row.getContact();
+            String contact = contactRaw != null && !contactRaw.isEmpty() ? contactRaw : null;
+            orderInfo.setContact(contact);
+
+            orderInfo.setTargetDate(row.getTargetDate());
+
+            orderInfo.setComment(COMMENT_MAP.getOrDefault(orderId, buildAndSaveComment(row)));
+
+            orderInfo.setChanel(row.getChannel());
+
+            String point = Normalizer.normalizePoint(row.getPoint());
+            orderInfo.setPoint(point);
+
+            orderInfo.setStatus(TaskStatus.get(row.getOrderStatus()));
+
+            orderInfo.setLinkedOrder(extractLinked(row.getLinked()));
+
+        } else {
+            orderInfo = orderInfoMap.get(orderId);
         }
-
-        String normalizeCity = Normalizer.normalizeCity(city);
-        task.setCity(normalizeCity);
-        task.setLocation(Locations.getLocation(normalizeCity));
-
-        String normalizeAddress = Normalizer.normalizeAddress(address, task.getCity());
-        task.setAddress(normalizeAddress);
-        Normalizer.extractCityFromAddress(task);
+        task.setOrderInfo(orderInfo);
 
         String workGroup = isNotBlank(row.getWorkGroup()) ? row.getWorkGroup().trim() : row.getOrderType();
         task.setWork(workGroup);
@@ -97,23 +126,10 @@ public class TaskMapper {
         String equipment = row.getEquipment();
         task.setEquipment(isNotBlank(equipment) ? equipment : "оборудование не указано");
 
-        task.setTargetDate(row.getTargetDate());
-
-        task.setComment(COMMENT_MAP.getOrDefault(row.getOrderId(), buildAndSaveComment(row)));
-
-        task.setChanel(row.getChannel());
-
-        String point = Normalizer.normalizePoint(row.getPoint());
-        task.setPoint(point);
-
-        task.setStatus(TaskStatus.get(row.getOrderStatus()));
-
-        task.setLinkedOrder(extractLinked(row.getLinked()));
-
         return task;
     }
 
-    private static String extractCity(String address) {
+    private static String extractCityFromAddres(String address) {
         int index = address.indexOf(",");
         return address.substring(0, index).trim();
     }

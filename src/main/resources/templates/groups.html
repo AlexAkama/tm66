@@ -203,6 +203,7 @@
         }
 
         .comment,
+        .contact,
         .finalize-comments {
             font-family: "Tahoma", Geneva, sans-serif;
         }
@@ -212,11 +213,13 @@
         }
 
         .comment-header,
+        .contact-header,
         .linked-order-header {
             margin-left: 10px;
         }
 
         .comment-content,
+        .contact-content,
         .finalize-comments {
             margin: 5px 0 5px 20px;
             font-size: 0.8em;
@@ -441,6 +444,11 @@
                         </tr>
                     </table>
                 </div>
+            </div>
+            <div class="contact" th:if="${order.getContact() != null}">
+                <div class="contact-header">КОНТАКТ В ТТ | ПОДПИСАНТ:</div>
+                <div class="contact-content" th:utext="${order.getContact()}"></div>
+
             </div>
             <div class="comment" th:if="${order.getComment() != null}">
                 <div class="comment-header">КОММЕНТАРИЙ:</div>

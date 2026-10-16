@@ -20,6 +20,7 @@ public class RowDto {
     private String orderId;
     private String point;
     private String address;
+    private String contact;
     private String workGroup;
     private Integer volume;
     private String jtiComment;
@@ -57,6 +58,9 @@ public class RowDto {
                     break;
                 case ADDRESS:
                     this.address = cell.getStringCellValue().trim();
+                    break;
+                case CONTACT:
+                    this.contact =  cell.getStringCellValue().trim();
                     break;
                 case WORK_GROUP:
                     this.workGroup = cell.getStringCellValue().trim();

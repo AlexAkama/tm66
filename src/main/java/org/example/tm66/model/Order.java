@@ -1,7 +1,6 @@
 package org.example.tm66.model;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.example.tm66.processor.Normalizer;
 import org.example.tm66.util.TimeUtils;
@@ -13,9 +12,9 @@ import java.util.function.Predicate;
 import static org.example.tm66.mapper.TaskMapper.WAREHOUSE;
 
 @Getter
-@RequiredArgsConstructor
 public class Order {
 
+    private final OrderInfo info;
     private final List<Task> tasks;
     private final String executorEmail;
 
@@ -25,48 +24,68 @@ public class Order {
     @Setter
     private List<FinalizeComment> finalizeComments;
 
-    public List<String> getLinkedOrder() {
-        return tasks.get(0).getLinkedOrder();
+    public Order(List<Task> tasks, String executorEmail) {
+        this.info = tasks.get(0).getOrderInfo();
+        this.tasks = tasks;
+        this.executorEmail = executorEmail;
+
+        this.info.setCargoWork(hasTaskMatching(Task::isCargoWork));
+        this.info.setTrashWork(hasTaskMatching(Task::isTrashWork));
+        this.info.setAuditWork(hasTaskMatching(Task::isAuditWork));
+        this.info.setRepairWork(hasTaskMatching(Task::isRepairWork));
+        this.info.setElectroWork(hasTaskMatching(Task::isElectroWork));
+        this.info.setRecoveryWork(hasTaskMatching(Task::isRecoveryWork));
+        this.info.setReceivingWork(hasTaskMatching(Task::isReceivingWork));
+        this.info.setIssuingWork(hasTaskMatching(Task::isIssuingWork));
+
     }
 
     public LocalDate getCreatAt() {
-        return tasks.get(0).getCreatAt();
+        return info.getCreatAt();
     }
 
     public String getOrderId() {
-        return tasks.get(0).getOrderId();
+        return info.getOrderId();
     }
 
     public String getUrl() {
-        return tasks.get(0).getUrl();
+        return info.getUrl();
     }
 
     public String getCity() {
-        return tasks.get(0).getCity();
+        return info.getCity();
     }
 
     public String getLocation() {
-        return tasks.get(0).getLocation();
+        return info.getLocation();
     }
 
     public String getAddress() {
-        return tasks.get(0).getAddress();
+        return info.getAddress();
+    }
+
+    public String getContact() {
+        return info.getContact();
     }
 
     public String getChanel() {
-        return tasks.get(0).getChanel();
+        return info.getChanel();
     }
 
     public String getPoint() {
-        return tasks.get(0).getPoint();
+        return info.getPoint();
     }
 
     public String getComment() {
-        return tasks.get(0).getComment();
+        return info.getComment();
+    }
+
+    public List<String> getLinkedOrder() {
+        return info.getLinkedOrder();
     }
 
     public LocalDate getTargetDate() {
-        return tasks.get(0).getTargetDate();
+        return info.getTargetDate();
     }
 
     public String getTargetDateString() {
@@ -85,54 +104,54 @@ public class Order {
     }
 
     public TaskStatus getStatus() {
-        return tasks.get(0).getStatus();
+        return info.getStatus();
     }
 
     public boolean isCargo() {
-        return hasTaskMatching(Task::isCargoWork);
+        return info.isCargoWork();
     }
 
     public boolean isTrash() {
-        return hasTaskMatching(Task::isTrashWork);
+        return info.isTrashWork();
     }
 
     public boolean isAudit() {
-        return hasTaskMatching(Task::isAuditWork);
+        return info.isAuditWork();
     }
 
     public boolean isRepair() {
-        return hasTaskMatching(Task::isRepairWork);
+        return info.isRepairWork();
     }
 
     public boolean isElectro() {
-        return hasTaskMatching(Task::isElectroWork);
+        return info.isElectroWork();
     }
 
     public boolean isRecovery() {
-        return hasTaskMatching(Task::isRecoveryWork);
+        return info.isRecoveryWork();
     }
 
     public boolean isReceiving() {
-        return hasTaskMatching(Task::isReceivingWork);
+        return info.isReceivingWork();
     }
 
     public boolean isIssuing() {
-        return hasTaskMatching(Task::isIssuingWork);
+        return info.isIssuingWork();
     }
 
     public String getMailToUrl() {
         String text = "ОТЧЕТ" + " "
                 + getOrderId() + " "
                 + getCity().toUpperCase() + " "
-                + getUrlAddress(tasks.get(0));
+                + getUrlAddress(info);
         text = text.replaceAll("\\s+", "%20");
         return "mailto:" + executorEmail + "?subject=" + text;
     }
 
-    private String getUrlAddress(Task task) {
-        if (WAREHOUSE.equals(task.getCity())) return "";
-        String address = Normalizer.normalizeAddressToMail(task.getAddress());
-        String point = Normalizer.normalizePointToMail(task.getPoint());
+    private String getUrlAddress(OrderInfo info) {
+        if (WAREHOUSE.equals(info.getCity())) return "";
+        String address = Normalizer.normalizeAddressToMail(info.getAddress());
+        String point = Normalizer.normalizePointToMail(info.getPoint());
         String text = address + " " + point;
         return truncateAtSpace(text, 15);
     }

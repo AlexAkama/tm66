@@ -3,8 +3,10 @@ package org.example.tm66.processor;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.tm66.model.OrderInfo;
 import org.example.tm66.model.Task;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -61,6 +63,7 @@ public final class Normalizer {
         CITY_REPLACEMENTS.put("ЛЕСНОЙ, СВЕРДЛОВСКАЯ ОБЛ.", "Лесной");
         CITY_REPLACEMENTS.put("СОСВА, СВЕРДЛОВСКАЯ ОБЛ.", "Сосьва");
         CITY_REPLACEMENTS.put("Сосьва, Серовский Р-н", "Сосьва");
+        CITY_REPLACEMENTS.put("Сосьва, Североуральск", "Сосьва");
         CITY_REPLACEMENTS.put("СОВЕТСКИЙ,Р-н СОВЕТСКИЙ,ХАНТЫ-МАНСИЙСКИЙ - ЮГРА", "Советский");
         CITY_REPLACEMENTS.put("СОВЕТСКИЙ", "Советский");
         CITY_REPLACEMENTS.put("ВОЛЧАНСК", "Волчанск");
@@ -121,7 +124,7 @@ public final class Normalizer {
         ADDRESS_REMOVE_REGEX = "(?i)\\b(" + pattern + ")\\b";
 
         ADDRESS_SPECIAL_REMOVE = new HashMap<>();
-        ADDRESS_SPECIAL_REMOVE.put("Сосьва", Collections.singletonList("Серовский Р-н, "));
+        ADDRESS_SPECIAL_REMOVE.put("Сосьва", Arrays.asList("Серовский Р-н, ", "Североуральск, "));
         ADDRESS_SPECIAL_REMOVE.put("Свободный", Collections.singletonList("Свердловская"));
         ADDRESS_SPECIAL_REMOVE.put("Черемухово", Collections.singletonList("Североуральск, "));
         ADDRESS_SPECIAL_REMOVE.put("Рудничный", Collections.singletonList("Краснотурьинск, "));
@@ -132,6 +135,7 @@ public final class Normalizer {
         POINT_TO_SPASE = new HashSet<>();
         POINT_TO_SPASE.add("/");
         POINT_TO_SPASE.add("\\");
+        POINT_TO_SPASE.add("_");
 
         POINT_FORM_REMOVE = new HashSet<>();
         POINT_FORM_REMOVE.add("ИП");
@@ -222,15 +226,15 @@ public final class Normalizer {
         return s.replace(right, "");
     }
 
-    public static void extractCityFromAddress(Task task) {
-        String city = task.getCity();
+    public static void extractCityFromAddress(OrderInfo info) {
+        String city = info.getCity();
         if (!CITY_TO_CHANGE.containsKey(city)) return;
-        String address = task.getAddress();
+        String address = info.getAddress();
         String realCity = CITY_TO_CHANGE.get(city);
         if (address.startsWith(realCity + ",")) {
             address = address.substring(realCity.length() + 1).trim();
-            task.setAddress(address);
-            task.setCity(realCity);
+            info.setAddress(address);
+            info.setCity(realCity);
         }
     }
 

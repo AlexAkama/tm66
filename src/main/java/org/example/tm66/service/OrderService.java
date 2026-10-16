@@ -60,7 +60,7 @@ public class OrderService {
         List<Task> tasks = TaskMapper.map(parsed);
 
         Map<String, List<Task>> orderContent = tasks.stream()
-                .collect(Collectors.groupingBy(Task::getOrderId));
+                .collect(Collectors.groupingBy(task -> task.getOrderInfo().getOrderId()));
 
         List<Order> orders = orderContent.values()
                 .stream()
