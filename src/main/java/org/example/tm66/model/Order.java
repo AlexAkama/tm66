@@ -14,7 +14,7 @@ import static org.example.tm66.mapper.TaskMapper.WAREHOUSE;
 @Getter
 public class Order {
 
-    private final OrderInfo info;
+    private final OrderInfo orderInfo;
     private final List<Task> tasks;
     private final String executorEmail;
 
@@ -25,67 +25,67 @@ public class Order {
     private List<FinalizeComment> finalizeComments;
 
     public Order(List<Task> tasks, String executorEmail) {
-        this.info = tasks.get(0).getOrderInfo();
+        this.orderInfo = tasks.get(0).getOrderInfo();
         this.tasks = tasks;
         this.executorEmail = executorEmail;
 
-        this.info.setCargoWork(hasTaskMatching(Task::isCargoWork));
-        this.info.setTrashWork(hasTaskMatching(Task::isTrashWork));
-        this.info.setAuditWork(hasTaskMatching(Task::isAuditWork));
-        this.info.setRepairWork(hasTaskMatching(Task::isRepairWork));
-        this.info.setElectroWork(hasTaskMatching(Task::isElectroWork));
-        this.info.setRecoveryWork(hasTaskMatching(Task::isRecoveryWork));
-        this.info.setReceivingWork(hasTaskMatching(Task::isReceivingWork));
-        this.info.setIssuingWork(hasTaskMatching(Task::isIssuingWork));
+        this.orderInfo.setCargoWork(hasTaskMatching(Task::isCargoWork));
+        this.orderInfo.setTrashWork(hasTaskMatching(Task::isTrashWork));
+        this.orderInfo.setAuditWork(hasTaskMatching(Task::isAuditWork));
+        this.orderInfo.setRepairWork(hasTaskMatching(Task::isRepairWork));
+        this.orderInfo.setElectroWork(hasTaskMatching(Task::isElectroWork));
+        this.orderInfo.setRecoveryWork(hasTaskMatching(Task::isRecoveryWork));
+        this.orderInfo.setReceivingWork(hasTaskMatching(Task::isReceivingWork));
+        this.orderInfo.setIssuingWork(hasTaskMatching(Task::isIssuingWork));
 
     }
 
     public LocalDate getCreatAt() {
-        return info.getCreatAt();
+        return orderInfo.getCreatAt();
     }
 
     public String getOrderId() {
-        return info.getOrderId();
+        return orderInfo.getOrderId();
     }
 
     public String getUrl() {
-        return info.getUrl();
+        return orderInfo.getUrl();
     }
 
     public String getCity() {
-        return info.getCity();
+        return orderInfo.getCity();
     }
 
     public String getLocation() {
-        return info.getLocation();
+        return orderInfo.getLocation();
     }
 
     public String getAddress() {
-        return info.getAddress();
+        return orderInfo.getAddress();
     }
 
     public String getContact() {
-        return info.getContact();
+        return orderInfo.getContact();
     }
 
     public String getChanel() {
-        return info.getChanel();
+        return orderInfo.getChanel();
     }
 
     public String getPoint() {
-        return info.getPoint();
+        return orderInfo.getPoint();
     }
 
     public String getComment() {
-        return info.getComment();
+        return orderInfo.getComment();
     }
 
     public List<String> getLinkedOrder() {
-        return info.getLinkedOrder();
+        return orderInfo.getLinkedOrder();
     }
 
     public LocalDate getTargetDate() {
-        return info.getTargetDate();
+        return orderInfo.getTargetDate();
     }
 
     public String getTargetDateString() {
@@ -104,46 +104,46 @@ public class Order {
     }
 
     public TaskStatus getStatus() {
-        return info.getStatus();
+        return orderInfo.getStatus();
     }
 
     public boolean isCargo() {
-        return info.isCargoWork();
+        return orderInfo.isCargoWork();
     }
 
     public boolean isTrash() {
-        return info.isTrashWork();
+        return orderInfo.isTrashWork();
     }
 
     public boolean isAudit() {
-        return info.isAuditWork();
+        return orderInfo.isAuditWork();
     }
 
     public boolean isRepair() {
-        return info.isRepairWork();
+        return orderInfo.isRepairWork();
     }
 
     public boolean isElectro() {
-        return info.isElectroWork();
+        return orderInfo.isElectroWork();
     }
 
     public boolean isRecovery() {
-        return info.isRecoveryWork();
+        return orderInfo.isRecoveryWork();
     }
 
     public boolean isReceiving() {
-        return info.isReceivingWork();
+        return orderInfo.isReceivingWork();
     }
 
     public boolean isIssuing() {
-        return info.isIssuingWork();
+        return orderInfo.isIssuingWork();
     }
 
     public String getMailToUrl() {
         String text = "ОТЧЕТ" + " "
                 + getOrderId() + " "
                 + getCity().toUpperCase() + " "
-                + getUrlAddress(info);
+                + getUrlAddress(orderInfo);
         text = text.replaceAll("\\s+", "%20");
         return "mailto:" + executorEmail + "?subject=" + text;
     }

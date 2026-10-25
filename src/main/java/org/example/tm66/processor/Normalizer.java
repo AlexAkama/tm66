@@ -4,7 +4,6 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.tm66.model.OrderInfo;
-import org.example.tm66.model.Task;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -238,4 +237,14 @@ public final class Normalizer {
         }
     }
 
+    public static String normalizeAuthor(String contact) {
+        if (contact == null || contact.isEmpty()) return null;
+        return PhoneNormalizer.addTelLink(contact, true);
+    }
+
+    public static String normalizeContract(String contact) {
+        if (contact == null || contact.isEmpty()) return null;
+        contact = contact.replace("\"", "").trim();
+        return PhoneNormalizer.addTelLink(contact);
+    }
 }

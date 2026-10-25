@@ -14,6 +14,7 @@ import java.time.LocalDate;
 public class RowDto {
     private String orderType;
     private String channel;
+    private String author;
     private String city;
     private LocalDate createDate;
     private LocalDate targetDate;
@@ -40,6 +41,9 @@ public class RowDto {
                     break;
                 case CHANNEL:
                     this.channel = cell.getStringCellValue().trim();
+                    break;
+                case AUTHOR:
+                    this.author = cell.getStringCellValue().trim();
                     break;
                 case CITY:
                     this.city = cell.getStringCellValue().trim();

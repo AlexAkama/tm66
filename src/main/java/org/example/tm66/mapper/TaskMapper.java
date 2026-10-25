@@ -29,6 +29,7 @@ public class TaskMapper {
     public static final String BASE_CITY = "Нижний Тагил";
     public static final String WAREHOUSE = "Склад";
     public static final String BASE_ADDRESS = "Восточное шоссе 16д";
+    public static final String BASE_ADDRESS_2 = "Железнодорожная 37";
 
 
     private static final Map<String, String> COMMENT_MAP = new HashMap<>();
@@ -64,7 +65,7 @@ public class TaskMapper {
 
         String orderId = row.getOrderId();
         OrderInfo orderInfo;
-        if (!orderInfoMap.containsKey(orderId)){
+        if (!orderInfoMap.containsKey(orderId)) {
 
             orderInfo = new OrderInfo();
             orderInfo.setOrderId(orderId);
@@ -87,8 +88,10 @@ public class TaskMapper {
 
             orderInfo.setLocation(Locations.getLocation(normalizeCity));
 
-            String contactRaw = row.getContact();
-            String contact = contactRaw != null && !contactRaw.isEmpty() ? contactRaw : null;
+            String author = Normalizer.normalizeAuthor(row.getAuthor());
+            orderInfo.setAuthor(author);
+
+            String contact = Normalizer.normalizeContract(row.getContact());
             orderInfo.setContact(contact);
 
             orderInfo.setTargetDate(row.getTargetDate());
@@ -145,9 +148,9 @@ public class TaskMapper {
         String address = row.getAddress();
         if (isBlank(city) && isBlank(address)) {
             row.setCity(BASE_CITY);
-            row.setAddress(BASE_ADDRESS);
+            row.setAddress(BASE_ADDRESS_2);
         } else if (BASE_CITY.equals(city) && isBlank(address)) {
-            row.setAddress(BASE_ADDRESS);
+            row.setAddress(BASE_ADDRESS_2);
         }
     }
 
@@ -173,7 +176,8 @@ public class TaskMapper {
     private static void separateWarehouse(RowDto row) {
         String city = row.getCity();
         String address = row.getAddress();
-        if (BASE_CITY.equals(city) && BASE_ADDRESS.equals(address)) {
+        if (BASE_CITY.equals(city) &&
+                (BASE_ADDRESS_2.equals(address) || BASE_ADDRESS.equals(address))) {
             row.setCity(WAREHOUSE);
             row.setAddress(WAREHOUSE);
         }
@@ -181,25 +185,30 @@ public class TaskMapper {
 
     private static String buildAndSaveComment(RowDto row) {
         String lineSeparator = "<br/>";
-        String initComment = row.getInitComment();
-        if (initComment == null || initComment.length() == 1) initComment = "";
-        else initComment = initComment.replace("; ", "");
-
         StringBuilder sb = new StringBuilder();
 
-        if (isNotBlank(initComment)) sb.append("ИНИЦИАТОР:").append(lineSeparator).append(initComment);
+
+        String initComment = row.getInitComment();
+        if (initComment == null || initComment.length() == 1) initComment = "";
+        else {
+            if (initComment.startsWith("; ")) initComment = initComment.substring(2).trim();
+            initComment = initComment.replaceAll("\"", "");
+        }
+        if (isNotBlank(initComment))
+            sb.append("<b>ОТ ИНИЦИАТОРА:</b>")
+                    .append(lineSeparator)
+                    .append(initComment.replace("\n", lineSeparator));
 
         String jtiComment = row.getJtiComment();
         boolean jtiCommentNotBlank = isNotBlank(jtiComment);
-        if (jtiCommentNotBlank) jtiComment = "JTI:" + lineSeparator + jtiComment;
-
+        if (jtiCommentNotBlank) jtiComment = "<b>ОТ JTI:</b>" + lineSeparator + jtiComment.replace("\n", lineSeparator);
         if (jtiCommentNotBlank && sb.length() > 0) sb.append(lineSeparator);
         sb.append(jtiComment);
 
         String executorComment = row.getExecutorComment();
         boolean executorCommentNotBlank = isNotBlank(executorComment);
-        if (executorCommentNotBlank) executorComment = "ИНФОРМАЦИЯ:" + lineSeparator + executorComment;
-
+        if (executorCommentNotBlank)
+            executorComment = "<b>ДЛЯ ИСПОЛНИТЕЛЯ:</b>" + lineSeparator + executorComment.replace("\n", lineSeparator);
         if (executorCommentNotBlank && sb.length() > 0) sb.append(lineSeparator);
         sb.append(executorComment);
 

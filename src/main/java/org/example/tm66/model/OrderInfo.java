@@ -17,6 +17,7 @@ public class OrderInfo extends IconIndicator {
     private String city;
     private String location;
     private String address;
+    private String author;
     private String contact;
     private String chanel;
     private String point;
