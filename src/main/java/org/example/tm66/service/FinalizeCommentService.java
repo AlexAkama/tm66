@@ -29,6 +29,7 @@ public class FinalizeCommentService {
 
     public String add(FinalizeComment comment) throws IOException {
         List<FinalizeComment> comments = readCommentsFromFile();
+        comment.setComment(comment.getComment().replace("\n", "<br>"));
         comments.add(comment);
         saveCommentsToFile(comments);
         return comment.getOrderId();

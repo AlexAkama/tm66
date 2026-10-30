@@ -333,7 +333,7 @@
                 commentDate.textContent = commentObject.shortDate;
                 container.appendChild(commentDate)
                 const commentText = document.createElement('div');
-                commentText.textContent = commentObject.comment;
+                commentText.innerHTML = commentObject.comment;
                 container.appendChild(commentText);
             });
             container.style.display = 'block';

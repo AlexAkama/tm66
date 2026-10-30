@@ -219,7 +219,7 @@
 
         .comment-content,
         .finalize-comments {
-            margin: 5px 0 5px 20px;
+            margin: 5px 5px 5px 20px;
             font-size: 0.8em;
         }
 
@@ -461,7 +461,7 @@
                 <table class="finalize-comments">
                     <tr th:each="comment : ${order.getFinalizeComments()}">
                         <td class="finalize-comment-data" th:text="${comment.getShortDate()}"></td>
-                        <td class="finalize-comment-content" th:text="${comment.getComment()}"></td>
+                        <td class="finalize-comment-content" th:utext="${comment.getComment()}"></td>
                     </tr>
                 </table>
             </div>
